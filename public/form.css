@@ -1,0 +1,19 @@
+.personal-info{
+    height:30px;
+    padding: 3px;
+    width: 200px;
+    background-color: aqua;
+    transition: 2s ease;
+}
+.personal-info input{
+    transition: 1s ease;
+    visibility: hidden;
+    opacity: 0;
+    
+}
+.personal-info label{
+    transition: 1s ease;
+    visibility: hidden;
+    
+    opacity: 0;
+}

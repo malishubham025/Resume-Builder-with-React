@@ -1,0 +1,150 @@
+.r3-body{
+    
+    width: 70%;
+    margin: 100px auto 0 auto;
+    background-color: white;
+}
+.r3-nameandphoto{
+    padding-left: 60px;
+    display: flex;
+    
+}
+.r3-name{
+    font-family: 'Montserrat', sans-serif;
+
+    margin-left: 10px;
+    background-color: white;
+}
+.r3-des{
+    margin-top: 0;
+    margin-left: 120px;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+.r3-realname{
+    color: #27384c;
+    font-size: 4rem;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    /* font-size: 2rem; */
+}
+.r3-second{
+    margin-left: 50px;
+
+}
+.r3-mainphoto{
+    height: 200px;
+    width: 200px;
+    clip-path: circle(50%);
+    background-image: url("cloud.png");
+    background-size: cover;
+    
+}
+.r3-photo img{
+    width: 100%;
+    
+    margin-top: 10px;
+    height: 220px !important;
+}
+.r3-content{
+    margin-top: 50px;
+}
+.resume3img{
+    position: relative;
+    left: 60px;
+}
+.r3-photo{
+    margin-top: 10px;
+    height: 250px;
+    overflow: hidden;
+    width: 25%;
+    margin-right: 50px;
+    border-radius: 10px;
+    border: 3px solid rgb(0, 48, 93);
+}
+.r3-nameandphoto{
+    background-color: white;
+}
+.r3-content{
+    display: flex;
+}
+.r3-am{
+    font-weight: 500;
+    font-size: 1.2rem;
+    width: 50%;
+    margin: 10px auto 0 auto;
+    font-family: 'Montserrat', sans-serif;
+}
+.r3-des-about-me{
+    
+    
+    width: 65%;
+    margin: 10px auto 0 auto;
+    font-family: 'Montserrat', sans-serif;
+}
+.r3-box{
+    /* width: 60px; */
+    width: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1px;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #27384c;
+    color: white;
+}
+.r3-box2{
+    width: 80%;
+}
+.r3-box2 p{
+    /* width: 90% !important; */
+    margin: 10px auto 0 auto;
+}
+.r3-box p{
+    /* width: 40%; */
+    margin: 10px auto 10px auto;
+    
+}
+.r3-content{
+    background-color: white;
+}
+.r3-dark{
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem !important;
+    margin-bottom: 0;
+    
+}
+.r3-info-below-dark{
+    font-family: 'Montserrat', sans-serif;
+}
+li{ 
+    margin: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.r3-contact{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+}
+td span{
+    margin: 20px !important;
+}
+.r3-left{
+    padding-left: 20px;
+}
+.r3-form{
+    padding: 10px;
+}
+.r3-form input,textarea{
+    background-color: #e3f0ffd3;
+    margin: 10px;
+}
+.temp-remove{
+    visibility: hidden;
+    
+}

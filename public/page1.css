@@ -1,0 +1,218 @@
+.resume-name-and-photo{
+    background-color: rgb(95, 61, 74);
+    
+    display: flex;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    
+ }
+ .resume-mainPage{
+   
+    font-family: 'Montserrat', sans-serif;
+ }
+ .resume-content-two{
+    background-color: rgba(244, 245, 245, 0.886);
+ }
+ .resume-content-two h3{
+    color:rgb(95, 61, 74);
+ }
+ .resume-name-and-photo p{
+    position: relative;
+    /* bottom: 70px; */
+    line-height: 2;
+    color: white;
+ }
+ .resume-name-and-photo h1{
+    position: relative;
+    /* bottom: 20px; */
+    line-height: 2.2;
+    color: white;
+ }
+ /* img{
+    height: 200px;
+    width: 200px;
+ } */
+ .download{
+   /* position: absolute; */
+   margin-top: 100px;
+   margin-left: 45%;
+   z-index: 0;
+ }
+.section-form{
+   position: absolute;
+   z-index: 1;
+   
+}
+.section-form input,textarea{
+   border: none;
+   margin-bottom: 10px;
+   padding: 5px;
+   color: black;
+   background-color: rgb(254, 254, 254);
+}
+.section-form input:hover{
+   background-color: rgba(118, 118, 118, 0.169);
+}
+.section-form textarea:hover{
+   background-color: rgba(118, 118, 118, 0.169);
+  
+}
+.add{
+   cursor: pointer;
+   position: relative;
+   border-radius: 6px;
+   border: 1px solid aliceblue;
+   
+   color: aliceblue;
+   /* padding: 5px; */
+  overflow: hidden;
+  padding: 0;
+  height: 40px;
+   background-color: rgba(60, 139, 179, 0.507);
+}
+.add span{
+   position: relative;
+   z-index: 2;
+   padding-top: 20px;
+   padding-left: 20px;
+   padding-right: 20px;
+   font-weight: 500;
+ }
+
+.add::before {
+   content: "";
+   position: absolute;
+   width: 0px;
+   height: 0px;
+   top: 0;
+   left: -3;
+   /* left: 45px; */
+   background-color: rgba(0, 86, 99, 0.237);
+   transform-origin: center;
+   border-radius: 10%;
+   opacity: 0;
+   transition-duration: 0.3s;
+ }
+ .add:hover::before {
+
+   /* transition: transform 100s ease; */
+   z-index: 0;
+   width: 100%;
+   height: 100%;
+   /* transform: translateX(100%); */
+   opacity: 1;
+ }
+ /* .download span{
+   height: 10px;
+   padding: 10px;
+ } */
+ .resume-mainPage{
+    width: 900px;
+    height: 100%;
+    margin: 100px auto auto auto !important;
+    z-index: 2;
+    
+ }
+ .resume-photo{
+    width: 200px;
+    height: 250px;
+    margin-left: 50px;
+    position: relative;
+    z-index: 1;
+    /* clip-path: circle(50%); */
+    overflow: hidden;
+    top: 40px;
+    /* border-radius: 1px solid black; */
+    background-color: rgba(242, 242, 252, 0.182);
+    border: 1px solid rgb(255, 255, 255);
+    border-width: 5px;
+    /* padding-top: 15px;
+    padding-bottom: 25px; */
+    
+ }
+ .button{
+   cursor: pointer;
+   position: relative;
+   border-radius: 6px;
+   border: 1px solid aliceblue;
+   background-color: rgba(24, 24, 24, 0.947);
+   color: aliceblue;
+   /* padding: 5px; */
+  overflow: hidden;
+  padding: 0;
+  height: 40px;
+  
+ }
+ .button span{
+   position: relative;
+   z-index: 2;
+   padding-top: 20px;
+   padding-left: 20px;
+   padding-right: 20px;
+   font-weight: 500;
+ }
+
+ .button::before {
+   content: "";
+   position: absolute;
+   width: 0px;
+   height: 0px;
+   top: 0;
+   left: -3;
+   /* left: 45px; */
+   background-color: rgba(169, 169, 169, 0.237);
+   transform-origin: center;
+   border-radius: 10%;
+   opacity: 0;
+   transition-duration: 0.3s;
+ }
+
+ .button:hover::before {
+
+   /* transition: transform 100s ease; */
+   z-index: 0;
+   width: 100%;
+   height: 100%;
+   /* transform: translateX(100%); */
+   opacity: 1;
+ }
+ .resume-photo img{
+   /* position: relative; */
+   /* clip-path: circle(50%); */
+   height: 250px;
+    max-width: 100%;
+   /* margin-top: 10px; */
+ }
+ .imagebutton{
+   position: relative;
+   bottom: 110px;
+   left: 30px;
+ }
+ .resume-name{
+    margin-left: 100px;
+    margin-top: 40px;
+ }
+ .resume-sub{
+    margin-top: 160px;
+    margin-left: 60px;
+ }
+ .resume-line{
+    width: 120px;
+    height: 2px;
+    background-color: brown;
+ }
+ .resume-education{
+    width: 280px;
+    
+ }
+ 
+ li{
+    font-size: 0.8rem;
+    margin: 10px;
+ }
+ .resume-content-two{
+    display: flex;
+ }
+ .resume-propExp2{
+    margin-top: 40px;
+ }
