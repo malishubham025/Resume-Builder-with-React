@@ -1,5 +1,5 @@
 # Resume builder React app
-this is the resume builder which is made usnig the react(non responsive) while making the app various react consepts such as inline styling,conditional rendering,hooks ect consepts are use 
+This is the resume builder which is made using the react(non responsive) while making the app various react concepts such as inline styling,conditional rendering,hooks ect concepts are used 
 
 ## Features of the app
 
