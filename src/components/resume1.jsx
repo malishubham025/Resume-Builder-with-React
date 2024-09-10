@@ -3,8 +3,24 @@ import React,{ useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import skill from "../skill";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 function FirstResume(prompts){
     const pdfRef=useRef();
+    
+    function save(){
+        const input=pdfRef.current;
+        const data={
+            templateid:1,
+            templatedata:input.innerHTML
+        }
+        axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
+            if(res.status==200){
+                alert("saved !");
+                <Navigate to ="/template1"></Navigate>
+            }
+        })
+    }
     const download=()=>{
         //const input=pdfRef.current;
         // setTimeout(()=>{
@@ -421,6 +437,8 @@ function FirstResume(prompts){
         
     </div>
     <button className="button download after-delete" style={value?{"opacity":0}:{"opacity":1}} onClick={download}> <span>Download</span></button>
+    <button className="button download after-delete" style={value?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
+
     </div>
     )
 }

@@ -1,0 +1,32 @@
+.login-div{
+    padding: 30px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    margin: 100px auto 0 auto;
+    background-color: rgba(97, 255, 239, 0.277);
+}
+.login-form{
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.login-form input{
+    border-radius: 10px;
+    background-color: none;
+    padding: 5px;
+    border: none;
+
+}
+.login-form button{
+    border-radius: 10px;
+    background-color: none;
+    padding: 6px;
+    border: solid black 1px;
+    width: 70%;
+
+}

@@ -13,35 +13,13 @@ function Login() {
     function handleLogin(event) {
         event.preventDefault();
 
-    //     fetch("http://localhost:5000/login", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify(user)
-    //     })
-    //     .then((res) => {
-    //         if (!res.ok) {
-    //             navigate("/login");
-    //         } else {
-    //             navigate("/home");
-    //         }
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //     });
-
-    //     setUser({
-    //         username: "",
-    //         password: ""
-    //     });
-    // }
+    
     axios.post('http://localhost:5000/login', user,{withCredentials:true})
     .then(res => {
                     if (res.status==200) {
                        
                     // } else {
-                        navigate("/home");
+                        navigate("/");
                     setUser({
                         username: "",
                         password: ""
@@ -55,7 +33,7 @@ function Login() {
             username: "",
             password: ""
         });
-        navigate("/");
+        navigate("/login");
     }
       console.log(err);
     });
@@ -68,10 +46,15 @@ function Login() {
             [name]: value
         }));
     }
-
+    function handleSignUP(event){
+        navigate("/signup");
+    }
     return (
-        <div>
-            <form onSubmit={handleLogin}>
+        <div className="login-div">
+            
+            <form className="login-form" onSubmit={handleLogin}>
+            <h1>Login</h1>
+            {/* <button></button> */}
                 <input 
                     type="text" 
                     placeholder="username" 
@@ -79,6 +62,7 @@ function Login() {
                     onChange={handleUser} 
                     value={user.username} 
                 />
+                <br />
                 <input 
                     type="password" 
                     placeholder="password" 
@@ -86,7 +70,10 @@ function Login() {
                     onChange={handleUser} 
                     value={user.password} 
                 />
-                <input type="submit" />
+                <br />
+                <a href="/signup">Signup</a>
+                <br />
+                <button type="submit" > Submit</button>
             </form>
         </div>
     );

@@ -9,7 +9,7 @@ import ResumeThree from "./components/resume3";
 import Login from "./components/login";
 import SignUp from "./components/signup";
 import axios from "axios";
-
+import { AllResume } from "./components/profile";
 axios.defaults.withCredentials = true;
 
 function Fun({ children }) {
@@ -35,14 +35,14 @@ function Fun({ children }) {
     return <div>Loading...</div>; // Show a loading spinner or message
   }
 
-  return isAuthenticated ? children : <Navigate to="/" />;
+  return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
 function App2() {
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Fun><App /></Fun>} />
+        <Route path="/" element={<App />} />
         <Route path="/templates" element={
           <Fun>
           <Template />
@@ -66,7 +66,12 @@ function App2() {
           <ResumeThree />
           </Fun>
         } />
-        <Route path="/" element={
+          <Route path="/allresume" element={
+          <Fun>
+          <AllResume />
+          </Fun>
+        } />
+        <Route path="/login" element={
           <Login />
 
         } />

@@ -10,6 +10,11 @@
    
     font-family: 'Montserrat', sans-serif;
  }
+ .userimg{
+   /* width: 109%; */
+   position: absolute;
+   width: 10%;
+ }
  .resume-content-two{
     background-color: rgba(244, 245, 245, 0.886);
  }

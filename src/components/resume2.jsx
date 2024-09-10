@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 function ResumeTwo(){
   const pdfRef=useRef();
     var [val,show]=React.useState(false);
@@ -21,6 +23,19 @@ function ResumeTwo(){
     function settrue(){
         show(!val);
     }
+    function save(){
+      const input=pdfRef.current;
+      const data={
+          templateid:2,
+          templatedata:input.innerHTML
+      }
+      axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
+          if(res.status==200){
+              alert("saved !");
+              <Navigate to ="/template1"></Navigate>
+          }
+      })
+  }
     const download=()=>{
       const input=pdfRef.current;
       // setTimeout(()=>{
@@ -247,6 +262,7 @@ function ResumeTwo(){
 
               </div>
               <button className="after-delete download button" style={val?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
+             <button className="button download after-delete" style={val?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
 
         </div>
     )
