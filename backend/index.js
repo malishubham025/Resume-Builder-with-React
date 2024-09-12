@@ -90,7 +90,40 @@ app.get("/profile",(req,res)=>{
         res.status(401).send({message:"unable to access"});
     })
 })
+const ResumeSnapshotSchema = new mongoose.Schema({
+    
+    image: {
+      type: String, // Storing the image as a base64 string
+      required: true,
+    }
+    
+  });
+  const ResumeSnapshot = mongoose.model('ResumeSnapshot', ResumeSnapshotSchema);
+app.post('/checkuser', async (req, res) => {
+        let user=jwt.decode(req.body.user);
+        console.log(user);
+        let username=user.username;
+        let id=req.body.template;
+        console.log(username+id);
+        templateModel.findOne({ _id: username+id, username: username }).then((result) => {
+            if (result) {
+                // Update existing document
+                // console.log("already saved");
+                res.status(200).send({ message: true,result:result });
 
+              
+            } 
+            else{
+                res.status(200).send({ message: false });
+            }
+            
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).send({ message: "An error occurred while checking the template" });
+        });
+        // res.status(200).send({ message: "Template updated successfully" });
+  });
+  
 app.post("/signout",(req,res)=>{
         try{
         res.clearCookie("userid");
@@ -108,9 +141,10 @@ app.post("/saveTemplate", (req, res) => {
         const data = req.body.templatedata;
         const username = user.username;
 
-        templateModel.findOne({ _id: id, username: username }).then((result) => {
+        templateModel.findOne({ _id: username+id, username: username }).then((result) => {
             if (result) {
                 // Update existing document
+                console.log("already saved");
                 templateModel.updateOne({ _id: username+id, username: username }, { $set: { data: data } }).then(() => {
                     res.status(200).send({ message: "Template updated successfully" });
                 }).catch((err) => {

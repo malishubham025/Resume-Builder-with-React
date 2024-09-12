@@ -10,6 +10,8 @@ import Login from "./components/login";
 import SignUp from "./components/signup";
 import axios from "axios";
 import { AllResume } from "./components/profile";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 axios.defaults.withCredentials = true;
 
 function Fun({ children }) {
@@ -42,6 +44,7 @@ function App2() {
   return (
     <Router>
       <Routes>
+        {/* <ToastContainer/> */}
         <Route path="/" element={<App />} />
         <Route path="/templates" element={
           <Fun>

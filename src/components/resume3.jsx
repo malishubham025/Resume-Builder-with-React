@@ -3,15 +3,46 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import htmlDocx from 'html-docx-js/dist/html-docx';
 import { saveAs } from 'file-saver';
+import axios from "axios";
+import { Navigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 function ResumeThree(){
     const pdfRef=useRef();
+    function notify (){
+        
+        toast("Saved !");
+      }
+      document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 's') {
+          // Prevent the default browser save action
+          save();
+          event.preventDefault(); 
+      
+        //   notify();
+        }
+      });
     var [showform,Visible]=React.useState(false);
     var [showform2,Visible2]=React.useState(false);
     var [count,IncrementCount]=React.useState(0);
     var [count2,IncrementCount2]=React.useState(0);
     var [path,functiontopath]=React.useState("../images/monkey.png");
     
-
+    function save(){
+        // const pdfRef=useRef();
+        const input=pdfRef.current;
+        console.log(input);
+        const data={
+            templateid:3,
+            templatedata:input.innerHTML
+        }
+        axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
+            if(res.status==200){
+                notify();
+                <Navigate to ="/template3"></Navigate>
+            }
+        })
+    }
         const download=()=>{
             
             const input=pdfRef.current;
@@ -22,40 +53,25 @@ function ResumeThree(){
                 })
                 
 
-            // },5000);
-            
-            // html2canvas(input).then((canvas)=>{
-            //     const imgData=canvas.toDataURL('image/png');
-            //     const pdf=new  jsPDF('p','mm','a4',true);
-            //     const pdfWidth=pdf.internal.pageSize.getWidth();
-            //     const pdfHeight=pdf.internal.pageSize.getHeight();
-            //     const imgWidth=canvas.width;
-            //     const imgHeight=canvas.height;
-            //     const ratio=Math.min(pdfWidth/imgWidth,pdfHeight/imgHeight);
-            //     const imgX=(pdfWidth-imgWidth*ratio)/2;
-            //     const imgY=30;
-            //     pdf.addImage(imgData,'PNG',imgX,imgY,imgWidth*ratio,imgHeight*ratio);
-            //     pdf.save('Resume.pdf');
-            // });
             
               console.log(input.innerHTML);
-              const x={
-                "user":"test",
-                "id":3,
-                "data":input.innerHTML
-              }
-            fetch("http://localhost:5000/",{
-                method:'get',
-                headers: {
-                    'Content-Type': 'application/json', // Specify content type
-                },
-                body: JSON.stringify(x), // Serialize the data
-            }).then((res)=>{
-                console.log("hello");
-            })
-            addsection.forEach((a)=>{
-                a.classList.remove("temp-remove");
-         })
+        //       const x={
+        //         "user":"test",
+        //         "id":3,
+        //         "data":input.innerHTML
+        //       }
+        //     fetch("http://localhost:5000/",{
+        //         method:'get',
+        //         headers: {
+        //             'Content-Type': 'application/json', // Specify content type
+        //         },
+        //         body: JSON.stringify(x), // Serialize the data
+        //     }).then((res)=>{
+        //         console.log("hello");
+        //     })
+        //     addsection.forEach((a)=>{
+        //         a.classList.remove("temp-remove");
+        //  })
 
         };
     
@@ -185,6 +201,7 @@ function ResumeThree(){
         });
         event.preventDefault();
     }
+
     function AddSection2(event){
         appendList2((pvalue)=>[...pvalue,set2])
         IncrementCount2(++count2);
@@ -244,7 +261,21 @@ function ResumeThree(){
         )
   }
     return(
+        
         <div ref={pdfRef}>
+             <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+
+              />
             <div class="r3-body" contentEditable="true">
         <div class="r3-nameandphoto" >
                <div class="r3-photo" contentEditable="false">
@@ -395,6 +426,7 @@ function ResumeThree(){
             </div>
         </div>
     </div>
+            <button className="button download after-delete" style={showform?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
              <button className="download button after-delete" style={showform?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
         </div>
     )

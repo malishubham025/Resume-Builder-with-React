@@ -5,8 +5,18 @@ import jsPDF from "jspdf";
 import skill from "../skill";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+// import jwt_decode from 'jwt-decode';
+import Cookies from 'js-cookie';
+// import html2canvas from 'html2canvas';
+
 function FirstResume(prompts){
     const pdfRef=useRef();
+    function notify (){
+        
+        toast("Saved !");
+    } 
     
     function save(){
         const input=pdfRef.current;
@@ -16,7 +26,9 @@ function FirstResume(prompts){
         }
         axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
             if(res.status==200){
-                alert("saved !");
+                // alert("saved !");
+                notify();
+                // saveSnapshot();
                 <Navigate to ="/template1"></Navigate>
             }
         })
@@ -30,21 +42,6 @@ function FirstResume(prompts){
             })
             
 
-        // },5000);
-        
-        // html2canvas(input).then((canvas)=>{
-        //     const imgData=canvas.toDataURL('image/png');
-        //     const pdf=new  jsPDF('p','mm','a4',true);
-        //     const pdfWidth=pdf.internal.pageSize.getWidth();
-        //     const pdfHeight=pdf.internal.pageSize.getHeight();
-        //     const imgWidth=canvas.width;
-        //     const imgHeight=canvas.height;
-        //     const ratio=Math.min(pdfWidth/imgWidth,pdfHeight/imgHeight);
-        //     const imgX=(pdfWidth-imgWidth*ratio)/2;
-        //     const imgY=10;
-        //     pdf.addImage(imgData,'PNG',imgX,imgY,imgWidth*ratio,imgHeight*ratio);
-        //     pdf.save('Resume.pdf');
-        // });
         const input = pdfRef.current;
         const inputHeight = input.scrollHeight; // Capture the full height of the resume
         const inputWidth = input.scrollWidth; // Capture the full width of the resume
@@ -126,6 +123,7 @@ function FirstResume(prompts){
         event.preventDefault();
         
       }
+
       function del(ind){
         console.log(ind);
         setSection(Section.filter((element,index)=>{
@@ -193,11 +191,7 @@ function FirstResume(prompts){
     function fun(skill){ 
         //console.log(skill)
          return(
-            // <li onClick={()=>{
-            //  prompts.onChecked(skill.id);
-            // }}>
-            //     {skill.content}
-            // </li>
+           
             <li>
                    {skill.content}
                </li>
@@ -216,9 +210,56 @@ function FirstResume(prompts){
         // console.log(file);
         handleProfilePhotoChange(URL.createObjectURL(file));
     }
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 's') {
+          // Prevent the default browser save action
+          event.preventDefault(); 
+      
+          // Your custom save logic here
+          save();
+        }
+      });
+      const [isset,setisSet]=React.useState(false);
+      const [data,setData]=React.useState('');
+      React.useEffect(()=>{
+        let user=Cookies.get("userid");
+        
+        // console.log(x);
+        axios.post("http://localhost:5000/checkuser",{user:user,template:1}).then((res)=>{
+            if(res.status==200){
+                // console.log();
+                if(res.data.message){
+                    setisSet(true);
+                    console.log(res.data.result.data);
+                    document.querySelector(".resume-mainPage").innerHTML=res.data.result.data;
+                    let x=document.querySelector(".add1");
+                    console.log(x);
+                    x.addEventListener("click",AddSection);
+                    setData(res.data.result.data);
+                }
+
+                <Navigate to ="/template1"></Navigate>
+            }
+        }).catch((err)=>{
+            console.log(err);
+        })
+      },[]);
     return(
         <div>
-        <div ref={pdfRef} className="resume-mainPage" contenteditable="true">
+            <ToastContainer
+position="top-right"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+
+/>
+        <div ref={pdfRef} id="resume" className="resume-mainPage" contenteditable="true">
                     <div className="resume-name-and-photo">
                         <div contentEditable="false"  className="resume-photo">
                             <img  src={setUserProfilePhoto?setUserProfilePhoto:"../images/cat (1).png"} alt="" />
@@ -311,7 +352,7 @@ function FirstResume(prompts){
                     <br />
                     <input type="text" value={empty2.list2} name="list2" placeholder="List Item(Any)" onChange={heading2} autocomplete="off"/>
                     <br />
-                    <button className="add" onClick={AddSection2} contenteditable="false"><span>Add</span></button>
+                    <button className="add add2" onClick={AddSection2} contenteditable="false"><span>Add</span></button>
                 </form>
                 </div>
               <div className="resume-main">
@@ -428,7 +469,7 @@ function FirstResume(prompts){
                     <br />
                     <input type="text" placeholder="List Item(Any)" name="list" onChange={heading} value={empty.list} autocomplete="off"/>
                     <br />
-                    <button className="add" onClick={AddSection} contenteditable="false"><span>Add</span> </button>
+                    <button className="add add1" onClick={AddSection} contenteditable="false"><span>Add</span> </button>
 
                 </form>
               </div>

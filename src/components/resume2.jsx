@@ -4,6 +4,8 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 function ResumeTwo(){
   const pdfRef=useRef();
     var [val,show]=React.useState(false);
@@ -16,6 +18,18 @@ function ResumeTwo(){
         paragraph:null
 
     })
+    function notify (){
+        
+      toast("Saved !");
+    } 
+    document.addEventListener('keydown', function(event) {
+      if (event.ctrlKey && event.key === 's') {
+        // Prevent the default browser save action
+        event.preventDefault(); 
+    
+        save();
+      }
+    });
     var [list,AddList]=React.useState([]);
     function setfalse(){
            show(!val);
@@ -31,7 +45,7 @@ function ResumeTwo(){
       }
       axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
           if(res.status==200){
-              alert("saved !");
+              notify();
               <Navigate to ="/template1"></Navigate>
           }
       })
@@ -130,6 +144,19 @@ function ResumeTwo(){
       function Addlisttopage() {
         return (
           <div >
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+
+              />
             {list.map((val, index) => (
               <div key={index}>
                 <div className="heading">
