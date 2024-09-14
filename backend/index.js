@@ -9,9 +9,10 @@ const { default: mongoose, mongo } = require("mongoose");
 const { type } = require("os");
 const cookieParser = require('cookie-parser');
 const { stringify } = require("querystring");
+require('dotenv').config();
 
 app.use(cookieParser());
-mongoose.connect('mongodb://127.0.0.1:27017/resumeBuilder').then(()=>{
+mongoose.connect(`mongodb+srv://${process.env.mongouser}:${process.env.mongopassword}@cluster0.cozcz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`).then(()=>{
    console.log("connected");
 }).catch((err)=>{
     console.log(err);
@@ -180,12 +181,14 @@ app.post("/login",(req,res)=>{
     res.cookie("userid",m);
     const username=req.body.username;
     const password=req.body.password;
+    console.log("request sent");
     // console.log(username,password);
     const user={
         username:username,
         password:password
     }
     model.find({username:username,password:password}).then((res1) => {
+        
         if (res1.length > 0) {
             console.log("login successful");
             // const m="hellowwji";
@@ -205,36 +208,50 @@ app.post("/login",(req,res)=>{
     
 })
 app.post("/signup", (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-    const email = req.body.email;
-    // console.log(req.body);
-    // // Create a new instance of the model
-    const newUser = new model({
-        _id: new Date().getTime(),  // Use a timestamp as an example unique ID
-        username: username,
-        password: password, // You should hash this password before saving
-        email: email
-    });
+    const { username, password, email } = req.body;
 
-    // Save the new user instance
-    newUser.save()
-        .then(() => {
-            console.log("Signup successful");
+    // Check if username or email already exists in the database
+    model.findOne({ $or: [{ username: username }, { email: email }] })
+        .then(existingUser => {
+            if (existingUser) {
+                // Username or email already exists, return a conflict error
+                return res.status(409).send({
+                    message: "Username or email already exists"
+                });
+            }
 
-            // Sign the JWT token with the user info (excluding password for security)
-            const id = jwt.sign({ username: newUser.username }, secret);
+            // If no duplicate is found, proceed with creating the new user
+            const newUser = new model({
+                _id: new Date().getTime(), // Use a timestamp as an example unique ID
+                username: username,
+                password: password, // You should hash this password before saving
+                email: email
+            });
 
-            // Set the JWT token as a cookie
-            res.cookie("userid", id, { httpOnly: true, secure: true });
+            // Save the new user
+            newUser.save()
+                .then(() => {
+                    console.log("Signup successful");
 
-            res.status(200).send({ message: "Signup successful" });
+                    // Sign the JWT token with the user info (excluding password for security)
+                    const id = jwt.sign({ username: newUser.username }, secret);
+
+                    // Set the JWT token as a cookie
+                    res.cookie("userid", id, { httpOnly: true, secure: true });
+
+                    res.status(200).send({ message: "Signup successful" });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    res.status(500).send({ message: "Internal server error" });
+                });
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
             res.status(500).send({ message: "Internal server error" });
         });
 });
+
 
 
 app.get("/save",(req,res)=>{
