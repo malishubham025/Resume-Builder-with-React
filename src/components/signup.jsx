@@ -24,26 +24,47 @@ function SignUP(){
     
     axios.post('http://localhost:5000/signup', user,{withCredentials:true})
     .then(res => {
+            // if (res.status==409) {
+                        
+            //     // } else {
+            //     alert("email or username  exists");
+            //     setUser({
+            //         email:"",
+            //         password:"",
+            //         username:""
+            //     });
+            // }
                     if (res.status==200) {
                        
                     // } else {
                         navigate("/");
                     setUser({
-                        username: "",
-                        password: ""
+                        email:"",
+                        password:"",
+                        username:""
                     });
                     }
     })
     .catch(err => {
+        if(err.response.status==409){
+
+            alert("username or email exist !");
+            setUser({
+                email:"",
+                password:"",
+                username:""
+    });
+        }
         if (err.response && err.response.status === 401) {
-                alert("hi");
+                alert("error occured !");
                 setUser({
-            username: "",
-            password: ""
+                    email:"",
+                    password:"",
+                    username:""
         });
         navigate("/signup");
     }
-      console.log(err);
+    //   console.log(err);
     });
 
 }
@@ -59,7 +80,7 @@ function SignUP(){
             <input onChange={handleChange} type="password" name="password" placeholder="password" required="true"/>
             <br />
             {/* <input placeholder="submit" /> */}
-            <button type="submit" onClick={handleSubmit}>Submit</button>
+            <button type="submit" onClick={handleSubmit} className="login-button">Submit</button>
             <Link to="/login">login</Link>
             </form>
         </div>

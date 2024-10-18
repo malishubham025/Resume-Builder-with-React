@@ -14,7 +14,7 @@ useEffect(()=>{
         if(res.status===200){
             const x=res.data.data
             setResume(x)
-            console.log(resume);
+            // console.log(resume);
             // document.querySelector(".userresumes").innerHTML=resume[0].data;
             // resume.map((data)=>{
             //     document.querySelector(".userresumes").innerHTML=data.data;
@@ -30,10 +30,16 @@ useEffect(()=>{
         <div className="userresumes">
             {resume.length > 0 ? (
                 resume.map((data, index) => (
+                    <div>
                     <div key={index} dangerouslySetInnerHTML={{ __html: data.data }} />
+                    <button>Edit this </button>
+                    </div>
                 ))
             ) : (
-                <h1>Loading...</h1>
+                <div>
+                <h1>No resume Found !</h1>
+                <h6>Save the resume first ...</h6>
+                </div>
             )}
             {/* {resume.length>0?resume.map((data)=>{return data.data}):<h1>loading</h1>} */}
         </div>

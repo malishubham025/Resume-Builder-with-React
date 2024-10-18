@@ -48,16 +48,7 @@ h1{
 
 
 }
-.nav-button{
-    width: 120px;
-    padding: 5px;
-    border-radius: 5px;
-    margin-left: 10px;
-    font-family: 'Montserrat', sans-serif;
-    border: 1px solid;
-    font-weight: bold;
-    background-color: #FFBF23;
-}
+
 .nav-button:hover{
     cursor: pointer;
     background-color: black;
@@ -121,12 +112,77 @@ h1{
     left: 200px;
 }
 
+.display{
+  /* position: absolute; */
+  /* right:  0;
+  top: 0; */
+  visibility: hidden;
+}
+.nav2{
+  width: 100%;
+  /* padding: 12px; */
+  display: flex;
+  
+  flex-direction: row;
+  /* background-color: aqua; */
+  align-items: center;
+  justify-content: center;
+  
+  /* background-color: aqua; */
+}
+.userimg{
+  /* width: 109%; */
+  /* position: absolute; */
+  /* position: relative; */
+  /* width: 10%; */
+  width: 50px;
+  /* margin: 0 auto 0 auto; */
+}
+.userimg{
+  z-index: 2;
+  cursor: pointer;
+  
+}
+.nav-button{
+  width: 130px;
+  padding: 5px;
+  border-radius: 5px;
+  margin-left: 10px;
+  /* margin: 10px auto 0 auto; */
+  font-family: 'Montserrat', sans-serif;
+  border: 1px solid;
+  font-weight: bold;
+  background-color: #FFBF23;
+}
 
 @media (max-width: 800px) {
+  .nav-button{
+    width: 100%;
+    /* padding: 5px; */
+    border-radius: 5px;
+    /* margin-left: 10px; */
+    /* margin: 10px auto 0 auto; */
+    font-family: 'Montserrat', sans-serif;
+    border: 1px solid;
+    font-weight: bold;
+    background-color: #FFBF23;
+  }
+  .nav2{
+    display: flex;
+    flex-direction: column;
+    /* background-color: aqua; */
+    align-items: center;
+    width: 100%;
+  }
     .main {
       flex-direction: column;
     }
-
+    .display{
+      position: relative;
+      bottom: 10px;
+      left: 20px;
+      visibility: visible;
+    }
     .content,
     .image {
       width: 100%;
@@ -151,35 +207,37 @@ h1{
     }
   
     .nav-items {
-      left: 20px;
+      /* background-color: #FFBF23; */
+      flex-direction: column;
+      right: 20px;
       justify-content: center;
       margin-top: 40px;
+      z-index: 2;
+
       
+    }
+    .nav-items div{
+      margin-bottom: 10px;
     }
     .nav-items span{
         position: relative;
         top: 10px;
         
       }
-    .nav-button {
-        
-      margin: 0 5px;
-      margin-top: 10px;
-    }
+    
   }
   
   @media (max-width: 600px) {
+    .nav-items div{
+      margin-bottom: 10px;
+    }
     .nav-items {
+      width: 100%;
       margin-top: 40px;
       flex-direction: column;
     }
 
-    .nav-button {
-      width: 100%;
-      margin: 5px 0;
-      margin-left: 40px;
-      margin-top: 10px;
-    }
+    
     .image img{
         position: relative;
         left: 50px;

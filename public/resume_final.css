@@ -1,0 +1,26 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.heading {
+  /* background-color: aqua; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.heading h1 {
+  margin-bottom: 0px !important;
+}
+.resumefinal {
+  width: 80%;
+  background-color: white;
+  padding: 10px;
+  margin: 30px auto 30px auto;
+  font-family: 'Times New Roman', Times, serif;
+}
+.links a {
+  margin-left: 4px;
+}
+.education table {
+  width: 100%;
+}

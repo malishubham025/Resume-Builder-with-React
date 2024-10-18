@@ -288,7 +288,7 @@ function ResumeTwo(){
               </div>
 
               </div>
-              <button className="after-delete download button" style={val?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
+             <button className="after-delete download button" style={val?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
              <button className="button download after-delete" style={val?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
 
         </div>

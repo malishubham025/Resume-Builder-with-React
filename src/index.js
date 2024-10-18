@@ -12,6 +12,7 @@ import axios from "axios";
 import { AllResume } from "./components/profile";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ResumeFinal from "./components/Resume4";
 axios.defaults.withCredentials = true;
 
 function Fun({ children }) {
@@ -81,6 +82,12 @@ function App2() {
         <Route path="/signup" element={
           <SignUp />
         } />
+        <Route path="/temp4" element={
+          <Fun>
+          <ResumeFinal />
+          </Fun>
+        } />
+
       </Routes>
     </Router>
   );

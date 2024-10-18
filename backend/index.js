@@ -258,6 +258,8 @@ app.get("/save",(req,res)=>{
     res.send("hello");
 })
 app.get("/",(req,res)=>{
+    let r=req.query;
+    console.log(r);
     res.hi="hello";
     res.send("hello");
 })

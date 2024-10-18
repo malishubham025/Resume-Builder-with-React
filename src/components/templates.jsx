@@ -30,6 +30,8 @@ function Template(prompts){
             <img name="i3" src="./images/tem3.png" alt="" /> 
            </div>
            </Link>
+
+           <Link to="/temp4"><h1>Temp4</h1></Link>
         </div>
     )
 }

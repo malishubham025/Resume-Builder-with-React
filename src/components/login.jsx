@@ -16,6 +16,7 @@ function Login() {
     
     axios.post('http://localhost:5000/login', user,{withCredentials:true})
     .then(res => {
+        
                     if (res.status==200) {
                        
                     // } else {
@@ -28,7 +29,7 @@ function Login() {
     })
     .catch(err => {
         if (err.response && err.response.status === 401) {
-                alert("hi");
+                alert("credentials does not exist");
                 setUser({
             username: "",
             password: ""
@@ -73,7 +74,7 @@ function Login() {
                 <br />
                 <a href="/signup">Signup</a>
                 <br />
-                <button type="submit" > Submit</button>
+                <button type="submit" className="login-button"> Submit</button>
             </form>
         </div>
     );
