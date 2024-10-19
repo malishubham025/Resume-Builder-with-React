@@ -4,15 +4,16 @@ import { useRef } from "react";
 import Download from "./download";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { produce } from "immer";
 
 function ResumeFinal() {
   
   const [edit, setEdit] = useState(false);
-  
+  const location = useLocation();
+  const { resumeData } = location.state || {}; 
 
-  const [resumeTemplate, setResumeTemplate] = useState({
+  const [resumeTemplate, setResumeTemplate] = useState(resumeData?resumeData:{
     heading: [
       {
         id: 1,

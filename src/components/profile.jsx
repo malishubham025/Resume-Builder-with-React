@@ -3,7 +3,9 @@ import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+// import { Navigate } from "react-router-dom";
 function AllResume(){
+    const navigate = useNavigate();
 //    alert("hi");
    const [resume,setResume]=React.useState({
     data:""
@@ -25,14 +27,19 @@ useEffect(()=>{
         }
     })
 },[])
-
+function handleEdit(index,data){
+    if(index==2){   
+        console.log(typeof JSON.parse(data));
+        navigate("/temp4", { state: { resumeData: JSON.parse(data) } });
+    }
+}
     return(
         <div className="userresumes">
             {resume.length > 0 ? (
                 resume.map((data, index) => (
                     <div>
                     <div key={index} dangerouslySetInnerHTML={{ __html: data.data }} />
-                    <button>Edit this </button>
+                    <button onClick={()=>{handleEdit(index,data.data)}}>Edit this </button>
                     </div>
                 ))
             ) : (
