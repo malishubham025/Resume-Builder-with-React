@@ -5,6 +5,8 @@ import Download from "./download";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import { Navigate } from "react-router-dom";
+import { produce } from "immer";
+
 function ResumeFinal() {
   
   const [edit, setEdit] = useState(false);
@@ -170,39 +172,105 @@ function ResumeFinal() {
   let education = resumeTemplate.education;
   let projects = resumeTemplate.projects;
   const pdfRef=useRef();
-  function handleChange(name,type,content,x){
-    let heading=resumeTemplate.heading;
-    if(type=="heading"){
-      
-      heading[0].content=content;
-      setResumeTemplate((pvalue)=>{
-        return {
-          ...pvalue,
-          heading
-        }
-        
-      });
-     }
-     else{
-        let contentArr=heading[1].content;
-        
-        contentArr.forEach((obj)=>{
-          if(obj.name==x){
-            obj.name=content;
+  function handleChange(name, type, content, x) {
+    if (name === "heading" && type === "heading") {
+      setResumeTemplate((pvalue) => {
+        return produce(pvalue, (draft) => {
+          if (content.length === 0) {
+            draft.heading.splice(0, 1); // Remove the first heading if content is empty
+          } else {
+            draft.heading[0].content = content;
           }
-        })
-     }
-    console.log(name,type,content);
+        });
+      });
+    } else if (name === "heading" && type === "link") {
+      setResumeTemplate((pvalue) => {
+        return produce(pvalue, (draft) => {
+          draft.heading[1].content.forEach((data, index) => {
+            if (data.name === x) {
+              if (content.length === 0) {
+                draft.heading[1].content.splice(index, 1); // Remove the link if content is empty
+              } else {
+                data.name = content;
+              }
+            }
+          });
+        });
+      });
+    } else if (name === "summary" && type === "heading") {
+      setResumeTemplate((pvalue) => {
+        return produce(pvalue, (draft) => {
+          if (content.length === 0) {
+            draft.summary.splice(0, 1); // Remove the summary heading if content is empty
+          } else {
+            draft.summary[0].content = content;
+          }
+        });
+      });
+    } else if (name === "summary" && type === "para") {
+      setResumeTemplate((pvalue) => {
+        return produce(pvalue, (draft) => {
+          if (content.length === 0) {
+            draft.summary.splice(1, 1); // Remove the summary paragraph if content is empty
+          } else {
+            draft.summary[1].content = content;
+          }
+        });
+      });
+    } else if (name === "education") {
+      setResumeTemplate((prev) => {
+        return produce(prev, (draft) => {
+          draft.education.forEach((data, index) => {
+            if (index === type.index) {
+              if (content.content.length === 0) {
+                draft.education.splice(index, 1); // Remove education entry if content is empty
+              } else {
+                data[content.type] = content.content;
+              }
+            }
+          });
+        });
+      });
+    } else if (name === "projects") {
+      if (content.type === "heading") {
+        setResumeTemplate((pvalue) => {
+          return produce(pvalue, (data) => {
+            if (content.content.length === 0) {
+              data.projects.splice(type.index, 1); // Remove project if heading is empty
+            } else {
+              data.projects[type.index].heading = content.content;
+            }
+          });
+        });
+      } else {
+        setResumeTemplate((pvalue) => {
+          return produce(pvalue, (data) => {
+            if (content.content.length === 0) {
+              data.projects[type.index].list.splice(content.index.index2, 1); // Remove project item if content is empty
+            } else {
+              data.projects[type.index].list[content.index.index2] = content.content;
+            }
+          });
+        });
+      }
+    }
   }
+  
   return (
     <div className="resumefinal" ref={pdfRef}>
       <button onClick={setedit} className="after-delete">Edit</button>
       <div className="heading"  >
         {heading.map((section,index) => {
           if (section.type === "heading") {
-            return <h1 key={section.id} onInput={(e)=>{
-              handleChange("heading","heading",e.target.innerText);
-            }} contentEditable={edit}>{section.content}</h1>;
+            return <h1
+            key={section.id}
+            contentEditable={edit}
+            suppressContentEditableWarning={true}
+            onBlur={(e) => handleChange("heading", "heading", e.target.innerText)}
+          >
+            {section.content}
+          </h1>
+          
           } else if (section.type === "link") {
             return (
               <div key={section.id} className="links">
@@ -213,9 +281,8 @@ function ResumeFinal() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="link"
-                    onInput={(e)=>{
-                      handleChange("heading","link",e.target.innerText,link.name);
-                    }} contentEditable={edit}
+                    onBlur={(e) => handleChange("heading", "link", e.target.innerText,link.name)}
+                     contentEditable={edit}
                   >
                     {link.name}
                   </a>
@@ -232,25 +299,25 @@ function ResumeFinal() {
           <button type="submit">Add Link</button>
         </form>
       </div>
-      <div className="summary" contentEditable={edit}>
+      <div className="summary" >
         <hr style={{ width: "100%" }} />
         {summary.map((data, index) => {
           if (data.type === "heading") {
-            return <h3 key={index}>{data.content}</h3>;
+            return <h3 key={index} contentEditable={edit} onBlur={(e) => handleChange("summary", "heading", e.target.innerText)}>{data.content}</h3>;
           } else if (data.type === "para") {
-            return <p key={index}>{data.content}</p>;
+            return <p key={index} contentEditable={edit} onBlur={(e) => handleChange("summary", "para", e.target.innerText)}>{data.content}</p>;
           }
         })}
         <hr style={{ width: "100%" }} />
       </div>
-      <div className="education" contentEditable={edit}>
+      <div className="education" >
         <h3>Education</h3>
         <table>
           <tbody>
             {education.map((data, index) => (
-              <tr key={index}>
-                <td>{data.school}</td>
-                <td>{data.description}</td>
+              <tr key={index} >
+                <td contentEditable={edit} onBlur={(e) => handleChange("education", {index}, {"type":"school","content":e.target.innerText})}>{data.school}</td>
+                <td contentEditable={edit} onBlur={(e) => handleChange("education", {index}, {"type":"description","content":e.target.innerText})}>{data.description}</td>
               </tr>
             ))}
           </tbody>
@@ -261,16 +328,16 @@ function ResumeFinal() {
           <button type="submit">Add School</button>
         </form>
       </div>
-      <div className="projects" contentEditable={edit}>
-        <h3>Academic Projects</h3>
+      <div className="projects" >
+        <h3 contentEditable={edit} >Academic Projects</h3>
         <hr style={{ width: "100%" }} />
 
         {projects.map((data,index) => {
           return (
             <div className="p">
-              <h3>{data.heading}</h3>
-              {data.list.map((data2) => {
-                return <li>{data2}</li>;
+              <h3 contentEditable={edit} onBlur={(e) => handleChange("projects", {index}, {"type":"heading","content":e.target.innerText})}>{data.heading}</h3>
+              {data.list.map((data2,index2) => {
+                return <li contentEditable={edit} onBlur={(e) => handleChange("projects", {index}, {"type":"li","index":{index2},"content":e.target.innerText})}>{data2}</li>;
               })}
 
               <form onSubmit={handleProjectList} className="after-delete">
@@ -282,6 +349,7 @@ function ResumeFinal() {
         })}
       </div>
       <Download name="shubham" current={pdfRef.current}></Download>
+
       <button onClick={onSave}>Save</button>
     </div>
   );
