@@ -11,9 +11,12 @@ function ResumeFinal() {
   
   const [edit, setEdit] = useState(false);
   const location = useLocation();
-  const { resumeData } = location.state || {}; 
-
-  const [resumeTemplate, setResumeTemplate] = useState(resumeData?resumeData:{
+  const { resumeData } = location.state|| {}; 
+  // React.useEffect(()=>{
+  //   console.log(resumeData);
+  // },[resumeData]);
+  // console.log("the final one"+resumeData);
+  const [resumeTemplate, setResumeTemplate] = useState(resumeData?JSON.parse(resumeData):{
     heading: [
       {
         id: 1,
@@ -172,6 +175,7 @@ function ResumeFinal() {
   let summary = resumeTemplate.summary;
   let education = resumeTemplate.education;
   let projects = resumeTemplate.projects;
+  console.log(heading,summary,education,projects);
   const pdfRef=useRef();
   function handleChange(name, type, content, x) {
     if (name === "heading" && type === "heading") {

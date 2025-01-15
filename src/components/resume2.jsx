@@ -3,10 +3,12 @@ import React, { useRef } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 function ResumeTwo(){
+  let x=useLocation();
+  console.log(x.state);
   const pdfRef=useRef();
     var [val,show]=React.useState(false);
     var [count,setcount]=React.useState(0);
@@ -184,113 +186,116 @@ function ResumeTwo(){
       
       
     return(
-        <div ref={pdfRef} >
-             <div  class="resume_two" >
+        <div ref={pdfRef} className="hello-two">
+             {x && x.state?<div  dangerouslySetInnerHTML={{ __html: x.state.resumeData }} />:
+             <div>
+                <div  class="resume_two" >
        
-              <div contentEditable="true"  class="nameandinfo">
-                  <div class="back">
-                      <div class="name2">
-                          <p>Shubham</p>
-                          <p>Mali</p>
-                          
-                          <p class="profession">Student</p>
-                      </div>
+       <div contentEditable="true"  class="nameandinfo">
+           <div class="back">
+               <div class="name2">
+                   <p>Shubham</p>
+                   <p>Mali</p>
+                   
+                   <p class="profession">Student</p>
+               </div>
 
-                        
-                  </div>
-                  <div class="profile">
-                      <div class="photo2" contentEditable="false">
-                          <div class="photo">
-                          <img  src={url?url:"../images/jhon.png"} alt="" />
-                          </div>
-                      </div>
-                      <div class="section">
-                        <div contentEditable="false">
-                        <input type="file" accept="image/*" onChange={changephoto} />
-                        </div>
-                          <h4>PROFILE</h4>
-                          <p>
-                            business Administration Student.I consider myself a responsible and orderly person. I am looking forward for my first work experience
-                          </p>
-                          <div class="contact-me">
-                              <h4>Contact Me</h4>
-                              <p>123-456-789</p>
-                              <p>hello@gmail.com</p>
-                              <p>123,Anywhere St.,Any City ST 1234</p>
-                          </div>
+                 
+           </div>
+           <div class="profile">
+               <div class="photo2" contentEditable="false">
+                   <div class="photo">
+                   <img  src={url?url:"../images/jhon.png"} alt="" />
+                   </div>
+               </div>
+               <div class="section">
+                 <div contentEditable="false">
+                 <input type="file" accept="image/*" onChange={changephoto} />
+                 </div>
+                   <h4>PROFILE</h4>
+                   <p>
+                     business Administration Student.I consider myself a responsible and orderly person. I am looking forward for my first work experience
+                   </p>
+                   <div class="contact-me">
+                       <h4>Contact Me</h4>
+                       <p>123-456-789</p>
+                       <p>hello@gmail.com</p>
+                       <p>123,Anywhere St.,Any City ST 1234</p>
+                   </div>
 
-                      </div>
-                      
+               </div>
+               
 
-                  </div>
-                  <div class="profile-two">
+           </div>
+           <div class="profile-two">
 
-                      <div class="profile-div">
-                      <div class="education">
-                          <div class="heading">
-                              <div class="before" ></div>
-                              <div><p> Education</p></div>
-                              
-                          </div>
-                          
-                          <p class="subheading">BORCELLE UNIVERSITY</p>
-                          <p class="lightheading1">Business Administration career, in progress</p>
-                          <p class="subheading">FAUGET COLLEGE</p>
-                          <p class="lightheading">2018-2022</p>
-                    </div>
-                    <div class="language">
-                      <div class="heading">
-                          <div class="before"></div>
-                          <div><p> Language</p></div>
-                          
-                      </div>                    
-                        <p class="lightheading">Native English.</p>
-                        <p class="lightheading">Advance d spanish.</p>
-                  </div>
-                  <div class="computerSkills">
-                      <div class="heading">
-                          <div class="before"></div>
-                          <div><p> Computer Science</p></div>
-                          
-                      </div>  
-                    <p class="lightheading">Text processor.</p>                 
-                    <p class="lightheading">Spreadsheet.</p>
-                    <p class="lightheading">Slide  presentation.</p>
-                  </div>
-                  <div class="education">
-                  <div class="heading">
-                      <div class="before"></div>
-                      <div><p> VOLUNTEER EXPERIENCE</p></div>
-                      
-                  </div> 
-                    <p class="subheading">INGOUDE COMPANY</p>
-                    <p class="lightheading">Participation in collections to distribute in low-income schools.</p>
-                  </div>
-                  {/* {list.map(addlisttopage)} */}
-                  <Addlisttopage></Addlisttopage>
-                  <div contentEditable="false">
-                  <button    className="after-delete button" onMouseOver={settrue} onMouseOut={setfalse}><span>Add Section</span></button>
-                  <form   style={val?{visibility:"visible"}:{visibility:"hidden"}}  onMouseOver={settrue} onMouseOut={setfalse}  className="r2-form section-form" action="">
-                    <input type="text" onChange={change} name="heading" value={section.heading}  placeholder="heading" autocomplete="off"/>
-                    <br />
-                    <input type="text" onChange={change} name="subheading" value={section.subheading} placeholder="Sub heading " autocomplete="off"/>
-                    <br />
-                    <input type="text" onChange={change} name="text" value={section.text} placeholder="text" autocomplete="off"/>
-                    <br />
-                    <textarea  id="" cols="30" name="paragraph" onChange={change} value={section.paragraph} rows="10" autocomplete="off"></textarea>
-                    <br />
-                    <button  className="after-delete add" onClick={addlist}> <span>Add</span> </button>
-                  </form>
-                  </div>
-                      </div>
-                  </div>
+               <div class="profile-div">
+               <div class="education">
+                   <div class="heading">
+                       <div class="before" ></div>
+                       <div><p> Education</p></div>
+                       
+                   </div>
+                   
+                   <p class="subheading">BORCELLE UNIVERSITY</p>
+                   <p class="lightheading1">Business Administration career, in progress</p>
+                   <p class="subheading">FAUGET COLLEGE</p>
+                   <p class="lightheading">2018-2022</p>
+             </div>
+             <div class="language">
+               <div class="heading">
+                   <div class="before"></div>
+                   <div><p> Language</p></div>
+                   
+               </div>                    
+                 <p class="lightheading">Native English.</p>
+                 <p class="lightheading">Advance d spanish.</p>
+           </div>
+           <div class="computerSkills">
+               <div class="heading">
+                   <div class="before"></div>
+                   <div><p> Computer Science</p></div>
+                   
+               </div>  
+             <p class="lightheading">Text processor.</p>                 
+             <p class="lightheading">Spreadsheet.</p>
+             <p class="lightheading">Slide  presentation.</p>
+           </div>
+           <div class="education">
+           <div class="heading">
+               <div class="before"></div>
+               <div><p> VOLUNTEER EXPERIENCE</p></div>
+               
+           </div> 
+             <p class="subheading">INGOUDE COMPANY</p>
+             <p class="lightheading">Participation in collections to distribute in low-income schools.</p>
+           </div>
+           {/* {list.map(addlisttopage)} */}
+           <Addlisttopage></Addlisttopage>
+           <div contentEditable="false">
+           <button    className="after-delete button" onMouseOver={settrue} onMouseOut={setfalse}><span>Add Section</span></button>
+           <form   style={val?{visibility:"visible"}:{visibility:"hidden"}}  onMouseOver={settrue} onMouseOut={setfalse}  className="r2-form section-form" action="">
+             <input type="text" onChange={change} name="heading" value={section.heading}  placeholder="heading" autocomplete="off"/>
+             <br />
+             <input type="text" onChange={change} name="subheading" value={section.subheading} placeholder="Sub heading " autocomplete="off"/>
+             <br />
+             <input type="text" onChange={change} name="text" value={section.text} placeholder="text" autocomplete="off"/>
+             <br />
+             <textarea  id="" cols="30" name="paragraph" onChange={change} value={section.paragraph} rows="10" autocomplete="off"></textarea>
+             <br />
+             <button  className="after-delete add" onClick={addlist}> <span>Add</span> </button>
+           </form>
+           </div>
+               </div>
+           </div>
 
-              </div>
+       </div>
 
-              </div>
-             <button className="after-delete download button" style={val?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
-             <button className="button download after-delete" style={val?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
-
+       </div>
+      <button className="after-delete download button" style={val?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
+      <button className="button download after-delete" style={val?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
+             </div>
+             }
         </div>
     )
 }

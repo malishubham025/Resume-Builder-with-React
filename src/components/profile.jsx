@@ -2,9 +2,11 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import ResumeFinal from "./Resume4";
 
 // import { Navigate } from "react-router-dom";
 function AllResume(){
+    // const navigate = useNavigate();
     const navigate = useNavigate();
 //    alert("hi");
    const [resume,setResume]=React.useState({
@@ -27,11 +29,11 @@ useEffect(()=>{
         }
     })
 },[])
-function handleEdit(index,data){
-    if(index==2){   
-        console.log(typeof JSON.parse(data));
-        navigate("/temp4", { state: { resumeData: JSON.parse(data) } });
-    }
+function handleEdit(index,resumeData){
+    // console.log(index,data);
+   
+    // <ResumeFinal data={data}></ResumeFinal>
+    navigate("/temp4", { state: {resumeData} });
 }
     return(
         <div className="userresumes">

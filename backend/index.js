@@ -12,7 +12,8 @@ const { stringify } = require("querystring");
 require('dotenv').config();
 
 app.use(cookieParser());
-mongoose.connect(`mongodb+srv://${process.env.mongouser}:${process.env.mongopassword}@cluster0.cozcz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`).then(()=>{
+let str=`mongodb+srv://${process.env.mongouser}:${process.env.mongopassword}@cluster0.cozcz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+mongoose.connect("mongodb://127.0.0.1:27017/resumeBuilder").then(()=>{
    console.log("connected");
 }).catch((err)=>{
     console.log(err);
