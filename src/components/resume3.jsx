@@ -75,10 +75,26 @@ function ResumeThree(){
 
         };
     
-    function chagephoto(event){
-        var file=event.target.files[0];
-        functiontopath(URL.createObjectURL(file));
+    function chagephoto(event) {
+        const file = event.target.files[0];
+        console.log(file);
+    
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        axios.post('http://localhost:5000/uploadPhoto', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+            .then(res => {
+                console.log('File uploaded successfully', res.data);
+            })
+            .catch(err => {
+                console.error('Error uploading file:', err);
+            });
     }
+        
     function showForm(){
            Visible(true);
     }

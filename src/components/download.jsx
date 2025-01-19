@@ -1,11 +1,12 @@
 import React from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import generatePDF from 'react-to-pdf';
 function Download(props){
     let data=props.current;
     // pdfRef.current
     const download1=()=>{
-     
+            
             var addsection=document.querySelectorAll(".after-delete");
             addsection.forEach((a)=>{
                    a.classList.add("temp-remove");

@@ -9,6 +9,8 @@ const { default: mongoose, mongo } = require("mongoose");
 const { type } = require("os");
 const cookieParser = require('cookie-parser');
 const { stringify } = require("querystring");
+const fs=require("fs");
+const multer = require("multer");
 require('dotenv').config();
 
 app.use(cookieParser());
@@ -92,6 +94,22 @@ app.get("/profile",(req,res)=>{
         res.status(401).send({message:"unable to access"});
     })
 })
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads'); // Destination folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // File name
+    }
+});
+const upload = multer({ storage });
+app.post("/uploadPhoto", upload.single('file'), (req, res) => {
+    console.log(req.file); // Log the uploaded file
+    if (!req.file) {
+        return res.status(400).send("No file uploaded.");
+    }
+    res.status(200).send("File uploaded successfully");
+});
 const ResumeSnapshotSchema = new mongoose.Schema({
     
     image: {
@@ -179,7 +197,11 @@ app.post("/saveTemplate", (req, res) => {
 });
 app.post("/login",(req,res)=>{
     const m="hello";
-    res.cookie("userid",m);
+    res.cookie("userid",m,{
+        httpOnly:true,
+        sameSite:true,
+        secure:true
+    });
     const username=req.body.username;
     const password=req.body.password;
     console.log("request sent");
