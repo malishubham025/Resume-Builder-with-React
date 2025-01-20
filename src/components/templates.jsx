@@ -31,7 +31,7 @@ function Template(prompts){
            </div>
            </Link>
 
-           <Link to="/temp4"><h1>Temp4</h1></Link>
+           <Link to="/template4"><h1>Temp4</h1></Link>
         </div>
     )
 }

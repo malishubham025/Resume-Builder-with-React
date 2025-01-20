@@ -1,134 +1,60 @@
 import React from "react";
 import { produce } from "immer";
+import Download from "./download";
+import { useRef } from "react";
+import axios from "axios";
+import Form from "./AddProjectForm";
+import { Navigate,useLocation } from "react-router-dom";
+import ResumeContext from "../Contexts/ResumeContext";
+import AddEducation from "./AddEducation";
+import AboutMe from "./AddAboutMe";
+import {AddList,HandleContact} from "./SoftHardSkills";
 function FirstResume(){
+    const location = useLocation();
     const [edit,setEdit]=React.useState(false);
-    const [resume,setResume]=React.useState({
-        name:{
-            name:"Shubham Mali",
-            role:"Financial Analyst"
-        },
-        my_contact:[
-            {
-                name:"My Contact",
-                link:""
-            },
-            {
-                name:"malishubham025@gmail.com",
-                link:"malishubham025@gmail.com"
-            },
-            {
-                name:"Github",
-                link:"https://www.github.com"
-            },
-            {
-                name:"9405623051",
-                link:""
-            }
-        ],
-        skills:[
-            "Hard Skill",
-            "C++",
-            "Java",
-            "DBMS",
-            "Python"
-        ],
-        soft_skills:[
-            "Soft Skill","Observation","Descision Making","Communication","Multitasking"
-        ],
-        education:[
-            {
-                name:"Education Background",
-                info:"",
-                percentage:""
-            },
-            {
-                name:"Primary Education Here",
-                info:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda, neque?",
-                percentage:"98%"
-            },
-            {
-                name:"Secondary Education",
-                info:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda, neque?",
-                percentage:"98%"
-            },
-            {
-                name:"Graduation",
-                info:"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda, neque?",
-                percentage:"98%"
-            }
-        ],
-        about_me:[
-            "About Me",
-            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eum dolores nemo aliquam harum aspernatur eligendi ducimus dignissimos fugit? Velit perspiciatis beatae doloribus id officiis repudiandae quae consequatur. Ratione, in corporis."
-        ],
-        experience:[
-            {
-                name:"Professional Experience",
-                year:"",
-                some_info:"",
-                responsibilities:[]
-            },
-            {
-                name:"Name of Experience",
-                year:"2021-2023",
-                some_info:"Key Responsibilities",
-                responsibilities:[
-                    "Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing."
-                ]
-            },
-            {
-                name:"Name of Experience",
-                year:"2021-2023",
-                some_info:"Key Responsibilities",
-                responsibilities:[
-                    "Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing."
-                ]
-            }
-        ]
-        ,
-        projects:[
-            {name:"Projects",
-                year:"",
-                some_info:"",
-                responsibilities:[
-                    ""
-                ]
-            },
-            {
-                name:"Name of project",
-                year:"2021-2023",
-                some_info:"Key Responsibilities",
-                responsibilities:[
-                    "Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing."
-                ]
-            },
-            {
-                name:"Name of Project",
-                year:"2021-2023",
-                some_info:"Key Responsibilities",
-                responsibilities:[
-                    "Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing.","Lorem ipsum dolor sit amet consectetur adipisicing."
-                ]
-            }
-        ],
-        achievements:[
-            "Achievements",
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Et maiores dolorem cum aspernatur aperiam beatae magni officia obcaecati sint aut. Quos accusantium, quo iste nisi labore aspernatur sed optio excepturi?",
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita rerum accusantium amet quaerat possimus explicabo harum, aperiam soluta magni earum alias perspiciatis. Debitis aspernatur voluptatibus repellat sed, laboriosam mollitia earum."
-        ]
-
-    })
+    const pdfRef=useRef();
+    let { resumeData } =  {}; 
+    if(location && location.state){
+        resumeData=location.state;
+        // console.log(resumeData.data);
+        
+    }
+    
+    
+    // console.log(typeof JSON.parse(resumeData));
+    let {resume,setResume}=React.useContext(ResumeContext);
+    resume=resumeData && resumeData.data?JSON.parse(resumeData.data):resume;
+    function handleName(data){
+        let name=data.name;
+        let role=data.role;
+        setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(name)
+                draft.name.name=name;
+                if(role)
+                draft.name.role=role
+            })
+        })
+        // console.log(name,role);
+    }
     function handleEdit(){
         setEdit(!edit);
     }
     function handleSkills(data){
         let index=data.index;
-        let d=data.data.name;
-        setResume((pvalue)=>{
-            return produce(pvalue,(draft)=>{
-                draft.skills[index]=d;
-            })
-        })
+        const newSkill = data.data?.name; 
+        console.log(newSkill,newSkill.length);
+        setResume((prevResume) => {
+            return produce(prevResume, (draft) => {
+                    if(newSkill.length===1 && newSkill[0]==='\n' || newSkill.length===0){
+                        draft.skills.splice(index,1);
+                    }
+                    else{
+                            draft.skills[index]=newSkill;
+                    }
+                
+            });
+        });
         // console.log(data);
     }
     function handleContact(data){
@@ -140,8 +66,14 @@ function FirstResume(){
         setResume((pvalue)=>{
             
             return produce(pvalue,(draft)=>{
+
+                if(name.length===1 && name[0]==='\n' || name.length===0){
+                    draft.my_contact.splice(index,1);
+                }
+                else{
                     draft.my_contact[index].name=name;
                     draft.my_contact[index].link=link;
+                }
                 })
             
         })
@@ -150,10 +82,16 @@ function FirstResume(){
     }
     function handleSoftSkills(data){
         let index = data.index;
-        let d = data.data.name;
+        let newSkill = data.data.name;
         setResume((pvalue) => {
             return produce(pvalue, (draft) => {
-                draft.soft_skills[index] = d;
+                // draft.soft_skills[index] = d;
+                if(newSkill.length===1 && newSkill[0]==='\n' || newSkill.length===0){
+                    draft.soft_skills.splice(index,1);
+                }
+                else{
+                    draft.soft_skills[index]=newSkill;
+                }
             });
         });
     }
@@ -164,8 +102,11 @@ function FirstResume(){
         let percentage = data.data.percentage;
         setResume((pvalue) => {
             return produce(pvalue, (draft) => {
+
+ 
                 if(name)
                     draft.education[index].name = name;
+
                 if(info)
                     draft.education[index].info = info;
                 if(percentage)
@@ -178,6 +119,7 @@ function FirstResume(){
         let info = data.info;
         setResume((pvalue) => {
             return produce(pvalue, (draft) => {
+                
                 if(info)
                     draft.about_me[index] = info;  // Changed from education to about_me
             });
@@ -185,13 +127,13 @@ function FirstResume(){
     }
     function handleExperience(data) {
         const { index, name, year, some_info, responsibilities } = data;
-    
+        // console.log(index,responsibilities,responsibilities.data.length);
         setResume((pvalue) =>
             produce(pvalue, (draft) => {
                 if (name) draft.experience[index].name = name;
                 if (year) draft.experience[index].year = year;
                 if (some_info) draft.experience[index].some_info = some_info;
-    
+                
                 if (responsibilities && responsibilities.index >= 0 && responsibilities.index < draft.experience[index].responsibilities.length) {
                     draft.experience[index].responsibilities[responsibilities.index] = responsibilities.data;
                 } else if (responsibilities && responsibilities.index === draft.experience[index].responsibilities.length) {
@@ -199,6 +141,10 @@ function FirstResume(){
                     draft.experience[index].responsibilities.push(responsibilities.data);
                 } else if (responsibilities) {
                     console.error(`Invalid responsibilities index: ${responsibilities.index}`);
+                }
+                if(responsibilities.data.length==1 && responsibilities.data[0]==='\n' || responsibilities.data.length==0){
+                    console.log("jo");
+                    draft.experience[index].responsibilities.splice(responsibilities.index,1);
                 }
             })
         );
@@ -220,23 +166,43 @@ function FirstResume(){
                 } else if (responsibilities) {
                     console.error(`Invalid responsibilities index: ${responsibilities.index}`);
                 }
+
+                if(responsibilities.data.length==1 && responsibilities.data[0]==='\n' || responsibilities.data.length==0){
+                    console.log("jo");
+                    draft.projects[index].responsibilities.splice(responsibilities.index,1);
+                }
             })
         );
     }
     
     function handleAchievements(data){
         let index=data.index;
-        let info=data.info;
+        let newSkill=data.info;
         
         setResume((pvalue)=>{
             return produce(pvalue,(draft)=>{
-                draft.achievements[index]=info;
+                if(newSkill.length===1 && newSkill[0]==='\n' || newSkill.length===0){
+                    draft.achievements.splice(index,1);
+                }
+                else
+                draft.achievements[index]=newSkill;
             })
         })
     }
-    function handleSubmit(event){
-        console.log(resume);
-        event.preventDefault();
+    function onSave(){
+    
+        const data={
+          templateid:1,
+          templatedata:JSON.stringify(resume)
+        }
+        axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
+          if(res.status==200){
+              alert("saved !");
+            //   notify();
+              // saveSnapshot();
+            //   <Navigate to ="/temp1"></Navigate>
+          }
+      })
     }
     let name=resume.name;
     let my_contact=resume.my_contact;
@@ -245,7 +211,7 @@ function FirstResume(){
     let education=resume.education,about_me=resume.about_me,achievements=resume.achievements,experience=resume.experience,projects=resume.projects;
     return (
         <>
-        <div className="maindiv" >
+        <div className="maindiv" ref={pdfRef} >
              
             <div className="name-photo">
                 <div className="photo-one">
@@ -255,8 +221,32 @@ function FirstResume(){
                     </div>
                 </div>
                 <div className="name-one">
-                    <h1 contentEditable={edit} >{name.name}</h1>
-                    <h3 contentEditable={edit}>{name.role}</h3>
+                    <h1 
+                    suppressContentEditableWarning={true}
+                    contentEditable={edit}
+                    onBlur={(event)=>{
+                        handleName(
+                            {
+                                name:event.target.innerText,
+                                role:""
+                            }
+                        );
+                    }}
+
+                    >{name.name}</h1>
+                    <h3 
+                    suppressContentEditableWarning={true}
+                    contentEditable={edit}
+                    onBlur={(event)=>{
+                        handleName(
+                            {
+                                name:"",
+                                role:event.target.innerText
+                            }
+                        );
+                    }}
+
+                    >{name.role}</h3>
                 </div>
             </div>
             <div className="lower-section">
@@ -317,7 +307,7 @@ function FirstResume(){
                             <ul>
                                 {skills.map((data,index)=>{
                                     if(index!=0)return(
-                                        <li 
+                                        <p><li 
                                         contentEditable={edit}
                                         onBlur={(event)=>{
                                             handleSkills(
@@ -330,9 +320,10 @@ function FirstResume(){
                                             );
                                         }}
                                         suppressContentEditableWarning={true}
-                                        ><p>{data}</p></li>
+                                        >{data}</li></p>
                                     )
                                 })}
+                                <AddList project={false} index="0" experience={false} soft={false} hard={true}></AddList>
                             </ul>
                         </div>
                     </div>
@@ -354,7 +345,7 @@ function FirstResume(){
                         <ul>
                             {soft_skills.map((data,index)=>{
                                 if(index!=0)return(
-                                    <li contentEditable={edit}
+                                    <p><li contentEditable={edit}
                                     onBlur={(event)=>{
                                         handleSoftSkills(
                                             {
@@ -366,10 +357,10 @@ function FirstResume(){
                                         );
                                     }}
                                 suppressContentEditableWarning={true}
-                                    ><p>{data}</p></li>
+                                    >{data}</li></p>
                                 )
                             })}
-
+                        <AddList project={false} experience={false} soft={true} index="0" hard={false}></AddList>
                         </ul>
                     </div>
                     <div className="Education-Background">
@@ -445,6 +436,7 @@ function FirstResume(){
                                     );
                                 }
                             })}
+                            
                         </ul>
                     </div>
                 </div>
@@ -545,7 +537,7 @@ function FirstResume(){
                                         <ul>
                                             {data.responsibilities.map((info,i)=>{
                                                 return (
-                                                    <li><p 
+                                                    <li> <p
                                                     onBlur={(event)=>{
                                                         handleExperience(
                                                             {
@@ -566,6 +558,7 @@ function FirstResume(){
                                                     contentEditable={edit}>{info}</p></li>
                                                 );
                                             })}
+                                            <AddList project={false} experience={true} index={index} soft={false} hard={true}></AddList>
                                         </ul>
                                         </div>
                                     );
@@ -663,6 +656,8 @@ function FirstResume(){
                                                     contentEditable={edit}>{info}</p></li>
                                                 );
                                             })}
+<AddList project={true} experience={false} index={index} soft={false} hard={false}></AddList>
+
                                         </ul>
                                         </div>
                                     );
@@ -704,8 +699,18 @@ function FirstResume(){
             </div>
            
         </div>
+
+        <div className="lower-sec">
         <button onClick={handleEdit}>Edit</button>
-        <button onClick={handleSubmit}>Submit</button>
+        <button onClick={onSave}>Save</button>
+        <Form isProject={true}></Form>
+        <Form isProject={false}></Form>
+        <AddEducation></AddEducation>
+        {/* <AboutMe AboutMe={true}></AboutMe> */}
+        <AboutMe AboutMe={false}></AboutMe>
+        <HandleContact></HandleContact>
+        <Download name="resume_pdf" current={pdfRef.current}></Download>
+        </div>
         </>
     )
 }

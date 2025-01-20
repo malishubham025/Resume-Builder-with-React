@@ -11,12 +11,17 @@ function ResumeFinal() {
   
   const [edit, setEdit] = useState(false);
   const location = useLocation();
-  const { resumeData } = location.state|| {}; 
+  let { resumeData } =  {}; 
+  if(location && location.state){
+      resumeData=location.state;
+      // console.log(resumeData.data);
+      
+  } 
   // React.useEffect(()=>{
   //   console.log(resumeData);
   // },[resumeData]);
   // console.log("the final one"+resumeData);
-  const [resumeTemplate, setResumeTemplate] = useState(resumeData?JSON.parse(resumeData):{
+  const [resumeTemplate, setResumeTemplate] = useState(resumeData && resumeData.data?JSON.parse(resumeData.data):{
     heading: [
       {
         id: 1,

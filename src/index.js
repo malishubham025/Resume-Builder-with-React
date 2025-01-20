@@ -13,6 +13,7 @@ import { AllResume } from "./components/profile";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ResumeFinal from "./components/Resume4";
+import ResumeProvider from "./Contexts/ResumeProvider";
 axios.defaults.withCredentials = true;
 
 function Fun({ children }) {
@@ -55,11 +56,15 @@ function App2() {
           <Fun>
           <Form />
       </Fun>} />
+      
         <Route path="/template1" element={
+          <ResumeProvider>
           <Fun>
           <Form />
           </Fun>
+          </ResumeProvider>
         } />
+        
         <Route path="/template2" element={
           <Fun>
           <ResumeTwo />
@@ -68,6 +73,11 @@ function App2() {
         <Route path="/template3" element={
           <Fun>
           <ResumeThree />
+          </Fun>
+        } />
+        <Route path="/template4" element={
+          <Fun>
+          <ResumeFinal />
           </Fun>
         } />
           <Route path="/allresume" element={
@@ -82,11 +92,7 @@ function App2() {
         <Route path="/signup" element={
           <SignUp />
         } />
-        <Route path="/temp4" element={
-          <Fun>
-          <ResumeFinal />
-          </Fun>
-        } />
+
 
       </Routes>
     </Router>

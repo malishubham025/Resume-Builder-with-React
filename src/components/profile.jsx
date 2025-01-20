@@ -10,6 +10,8 @@ function AllResume(){
     const navigate = useNavigate();
 //    alert("hi");
    const [resume,setResume]=React.useState({
+    _id:"",
+    username:"",
     data:""
 });
 useEffect(()=>{
@@ -17,6 +19,7 @@ useEffect(()=>{
     axios.get("http://localhost:5000/profile").then((res)=>{
         if(res.status===200){
             const x=res.data.data
+            // console.log(x);
             setResume(x)
             // console.log(resume);
             // document.querySelector(".userresumes").innerHTML=resume[0].data;
@@ -33,7 +36,13 @@ function handleEdit(index,resumeData){
     // console.log(index,data);
    
     // <ResumeFinal data={data}></ResumeFinal>
-    navigate("/temp4", { state: {resumeData} });
+    
+    let _id=resumeData._id;
+    let username=resumeData.username;
+    let tempid=_id.substring(username.length,);
+    // console.log(tempid);
+    let data=resumeData.data;
+    navigate("/template"+tempid, { state: {data} });
 }
     return(
         <div className="userresumes">
@@ -41,7 +50,7 @@ function handleEdit(index,resumeData){
                 resume.map((data, index) => (
                     <div>
                     <div key={index} dangerouslySetInnerHTML={{ __html: data.data }} />
-                    <button onClick={()=>{handleEdit(index,data.data)}}>Edit this </button>
+                    <button onClick={()=>{handleEdit(index,data)}}>Edit this </button>
                     </div>
                 ))
             ) : (
