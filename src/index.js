@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ResumeFinal from "./components/Resume4";
 import ResumeProvider from "./Contexts/ResumeProvider";
+import ThirdContextProvider from "./Contexts/ThirdContextProvider";
 axios.defaults.withCredentials = true;
 
 function Fun({ children }) {
@@ -71,9 +72,11 @@ function App2() {
           </Fun>
         } />
         <Route path="/template3" element={
+          <ThirdContextProvider>
           <Fun>
           <ResumeThree />
           </Fun>
+          </ThirdContextProvider>
         } />
         <Route path="/template4" element={
           <Fun>

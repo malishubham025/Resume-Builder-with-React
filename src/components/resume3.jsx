@@ -1,450 +1,542 @@
-import React, { useRef } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import htmlDocx from 'html-docx-js/dist/html-docx';
-import { saveAs } from 'file-saver';
+import React from "react";
+import ThirdContext from "../Contexts/ThirdContext";
+import {Form,ProjectExperi,EducationForm,ContactForm} from "./handleList";
+import { produce } from "immer";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import Download from "./download";
 function ResumeThree(){
-    const pdfRef=useRef();
-    function notify (){
+    const location = useLocation();
+    let  resumeData  =  {}; 
+    if(location && location.state){
+        resumeData=location.state;
+        // console.log(resumeData.data);
         
-        toast("Saved !");
-      }
-      document.addEventListener('keydown', function(event) {
-        if (event.ctrlKey && event.key === 's') {
-          // Prevent the default browser save action
-          save();
-          event.preventDefault(); 
-      
-        //   notify();
-        }
-      });
-    var [showform,Visible]=React.useState(false);
-    var [showform2,Visible2]=React.useState(false);
-    var [count,IncrementCount]=React.useState(0);
-    var [count2,IncrementCount2]=React.useState(0);
-    var [path,functiontopath]=React.useState("../images/monkey.png");
-    
-    function save(){
-        // const pdfRef=useRef();
-        const input=pdfRef.current;
-        console.log(input);
-        const data={
-            templateid:3,
-            templatedata:input.innerHTML
-        }
-        axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
-            if(res.status==200){
-                notify();
-                <Navigate to ="/template3"></Navigate>
+    }
+    let ref=React.useRef();
+    let {resume,setResume}=React.useContext(ThirdContext);
+    const [edit,setEdit]=React.useState(false);
+    resume=resumeData && resumeData.data?JSON.parse(resumeData.data):resume;
+    function handleEdit(){
+        setEdit(!edit);
+    }
+    function handleName(data){
+        let first_name=data.first_name;
+        let last_name=data.last_name;
+        let title=data.title;
+        setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(first_name)draft.name.first_name=first_name;
+                if(last_name)draft.name.last_name=last_name;
+                if(title)draft.name.title=title
+            })
+        })
+    }
+    function handleAboutMe(data){
+        let name=data.name;
+        let info=data.info;
+        setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(name)draft.about_me.name=name;
+                if(info)draft.about_me.info=info;
+            })
+        })
+    }
+    function handleContact(data){
+        let name=data.name;
+        let link=data.link;
+        let index=data.index;
+        setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(name)draft.contact[index].name=name;
+                if(link)draft.contact[index].link=link;
+            })
+        })
+    }
+    function handleList(info){
+        let data=info.data;
+        let index1=info.index1;
+        let index2=info.index2;
+        setResume((pvalue)=>{
+            if(index1===3){
+                return produce(pvalue,(draft)=>{
+                    if(data)draft.language[index2]=data;
+                    if(data.length===1 && data[0]==='\n' || data.length==0 && index2!=0){
+                        draft.language.splice(index2,1);
+                    }
+                })
+                // if(data.length)
+            }
+            else if(index1===4){
+                return produce(pvalue,(draft)=>{
+                    if(data)draft.expertise[index2]=data;
+                    if(data.length===1 && data[0]==='\n' || data.length==0 && index2!=0){
+                        draft.expertise.splice(index2,1);
+                    }
+                })
+            }
+            else{
+                return produce(pvalue,(draft)=>{
+                    if(data)draft.skills[index2]=data;
+                    if(data.length===1 && data[0]==='\n' || data.length==0 && index2!=0){
+                        draft.skills.splice(index2,1);
+                    }
+                })
             }
         })
     }
-        const download=()=>{
-            
-            const input=pdfRef.current;
-            // setTimeout(()=>{
-                var addsection=document.querySelectorAll(".after-delete");
-                addsection.forEach((a)=>{
-                       a.classList.add("temp-remove");
-                })
-                
-
-            
-              console.log(input.innerHTML);
-        //       const x={
-        //         "user":"test",
-        //         "id":3,
-        //         "data":input.innerHTML
-        //       }
-        //     fetch("http://localhost:5000/",{
-        //         method:'get',
-        //         headers: {
-        //             'Content-Type': 'application/json', // Specify content type
-        //         },
-        //         body: JSON.stringify(x), // Serialize the data
-        //     }).then((res)=>{
-        //         console.log("hello");
-        //     })
-        //     addsection.forEach((a)=>{
-        //         a.classList.remove("temp-remove");
-        //  })
-
-        };
-    
-    function chagephoto(event) {
-        const file = event.target.files[0];
-        console.log(file);
-    
-        const formData = new FormData();
-        formData.append('file', file);
-    
-        axios.post('http://localhost:5000/uploadPhoto', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-            .then(res => {
-                console.log('File uploaded successfully', res.data);
+    function handleInfo(info){
+        let name=info.name;
+        let year=info.year;
+        let ifo=info.info;
+        let index1=info.index1;
+        let index2=info.index2;
+        if(index1===6){
+            setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(name)draft.experience[index2].name=name;
+                if(year)draft.experience[index2].year=year;
+                if(ifo)draft.experience[index2].info=ifo;
             })
-            .catch(err => {
-                console.error('Error uploading file:', err);
-            });
-    }
-        
-    function showForm(){
-           Visible(true);
-    }
-    function showForm2(){
-        Visible(false);
-    } 
-    function showForm3(){
-        Visible2(true);
- }
- function showForm22(){
-     Visible2(false);
- } 
-    var [set,Setsection]=React.useState({
-        id:count,
-        heading:null,
-        boldHeading:null,
-        lightHeading:null,
-        paragraph:null
-    })
-    var [set2,Setsection2]=React.useState({
-        id:count2,
-        heading:null,
-        boldHeading:null,
-        lightHeading:null,
-        paragraph:null
-    })
-    var [list,appendList]=React.useState([]);
-    var [list2,appendList2]=React.useState([]);
-    function addSecton(event){
-             var name=event.target.name;
-             var value=event.target.value;
-             Setsection((pvalue)=>{
-               if(name==="heading"){
-                return{
-                    ...pvalue,
-                     heading:value
-                }
-                
-
-                
-
-               }
-               if(name==="boldHeading"){
-                return{
-                    ...pvalue,
-                    boldHeading:value
-                }
-                
-
-                
-
-               }
-               if(name==="lightHeading"){
-                return{
-                    ...pvalue,
-                    lightHeading:value
-                }
-               }
-               if(name==="paragraph"){
-                return{
-                    ...pvalue,
-                    paragraph:value
-                }
-               }
-
-             })
+        });
+        }
+        else if(index1===7){
+            setResume((pvalue)=>{
+            return produce(pvalue,(draft)=>{
+                if(name)draft.projects[index2].name=name;
+                if(year)draft.projects[index2].year=year;
+                if(ifo)draft.projects[index2].info=ifo;
+            })
+        });
+        }
 
     }
-    function addSecton2(event){
-        var name=event.target.name;
-        var value=event.target.value;
-        Setsection2((pvalue)=>{
-          if(name==="heading2"){
-           return{
-               ...pvalue,
-                heading:value
-           }
-           
-
-           
-
-          }
-          if(name==="boldHeading2"){
-           return{
-               ...pvalue,
-               boldHeading:value
-           }
-           
-
-           
-
-          }
-          if(name==="lightHeading2"){
-           return{
-               ...pvalue,
-               lightHeading:value
-           }
-          }
-          if(name==="paragraph2"){
-           return{
-               ...pvalue,
-               paragraph:value
-           }
-          }
-
+    function handleEducation(info){
+        let name=info.name;
+        let year=info.year;
+        let ifo=info.info;
+        let index1=info.index1;
+        setResume((pvalue)=>{
+        return produce(pvalue,(draft)=>{
+            if(name)draft.education[index1].name=name;
+            if(year)draft.education[index1].year=year;
+            if(ifo)draft.education[index1].info=ifo;
         })
+    })
 
-}
-    function AddSection(event){
-        appendList((pvalue)=>[...pvalue,set])
-        IncrementCount(++count);
-        Setsection({
-            
-                boldHeading:"",
-                heading:"",
-                lightHeading:"",
-                paragraph:""
-            
-
-        });
-        event.preventDefault();
     }
-
-    function AddSection2(event){
-        appendList2((pvalue)=>[...pvalue,set2])
-        IncrementCount2(++count2);
-        Setsection2({
-            
-                boldHeading:"",
-                heading:"",
-                lightHeading:"",
-                paragraph:""
-            
-
-        });
-        event.preventDefault();
+    function handleEducationDelete(index){
+        if(index!=0 && index!=1){
+            setResume((pvalue)=>{
+                return produce(pvalue,(draft)=>{
+                    draft.education.splice(index,1);
+                })
+            })
+        }
     }
-    function deleteItem(ind){
-        
-        
-        appendList(list.filter((element,index)=>{
-            return index!==ind;
-        }))
+    function handleProjectsDelete(index){
+       
+        if(index!=0 && index!=1){
+            setResume((pvalue)=>{
+                return produce(pvalue,(draft)=>{
+                    draft.projects.splice(index,1);
+                })
+            })
+        }
     }
-    function deleteItem2(ind){
-        
-        
-        appendList2(list2.filter((element,index)=>{
-            return index!==ind;
-        }))
+    function handleExperienceDelete(index){
+        // console.log(index);
+        if(index!=0 && index!=1){
+            setResume((pvalue)=>{
+                return produce(pvalue,(draft)=>{
+                    draft.experience.splice(index,1);
+                })
+            })
+        }
     }
-    function Addlist(items,index){
-          return(
-            <div>
-                    <div style={items.heading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-box">
-                        <p>{items.heading}</p>
-                    </div>
-                    <p style={items.boldHeading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-dark">{items.boldHeading}</p>                   
-                     <p style={items.lightHeading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-info-below-dark">{items.lightHeading}</p>
-                     <p style={items.paragraph?{visibility:"visible"}:{visibility:"hidden"}} className="r3-info-below-dark">{items.paragraph}</p>
-                     <button className="after-delete" onClick={()=>{
-                        deleteItem(index);
-                        }}>Delete</button>
+    function onSave(){
+    
+        const data={
+          templateid:3,
+          templatedata:JSON.stringify(resume)
+        }
+        axios.post("http://localhost:5000/saveTemplate",data).then((res)=>{
+          if(res.status==200){
+              alert("saved !");
+            //   notify();
+              // saveSnapshot();
+            //   <Navigate to ="/temp1"></Navigate>
+          }
+      })
+    }
+    return (
+        <>
+        <div className="three-main" ref={ref}>
+            <button onClick={handleEdit}>Edit</button>
+            <button onClick={onSave}>Save</button>
+            <div className="three-name-photo">
+                <div className="three-photo">
+                    <img src="../images/jhon.png" alt="" />
                 </div>
-          )
-    }
-    function Addlist2(items,index){
-        return(
-          <div>
-                  <div style={items.heading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-box">
-                      <p>{items.heading}</p>
-                  </div>
-                  <p style={items.boldHeading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-dark">{items.boldHeading}</p>                   
-                   <p style={items.lightHeading?{visibility:"visible"}:{visibility:"hidden"}} className="r3-info-below-dark">{items.lightHeading}</p>
-                   <p style={items.paragraph?{visibility:"visible"}:{visibility:"hidden"}} className="r3-info-below-dark">{items.paragraph}</p>
-                   <button className="after-delete" onClick={()=>{
-                      deleteItem2(index);
-                      }}>Delete</button>
-              </div>
-        )
-  }
-    return(
-        
-        <div ref={pdfRef}>
-             <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
+                <div className="three-name">
+                    <div>
+                        <h1
+                        onBlur={(event)=>{
+                            handleName({
+                                first_name:event.target.innerText,
+                                last_name:"",
+                                title:""
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}>{resume.name.first_name}</h1>
+                        <h1
+                        onBlur={(event)=>{
+                            handleName({
+                                first_name:"",
+                                last_name:event.target.innerText,
+                                title:""
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}>{resume.name.last_name}</h1>
+                    </div>
+                    <p
+                        onBlur={(event)=>{
+                            handleName({
+                                first_name:"",
+                                last_name:"",
+                                title:event.target.innerText
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}>{resume.name.title}</p>
 
-              />
-            <div class="r3-body" contentEditable="true">
-        <div class="r3-nameandphoto" >
-               <div class="r3-photo" contentEditable="false">
-                  <div class="mainphoto">
-                      <img src={path?path:"../images/monkey.png"} alt="" />
-                  </div>
-                  
-               </div>
-               <div class="r3-name">
-                <p class="r3-realname">RICHARD </p>
-                <p class="r3-realname second">SANCHEZ </p>
-                <p class="r3-des">Product Designer</p>
-               </div>
-        </div>
-        <div class="r3-content">
-            <div class="r3-left">
-                    <div class="r3-aboutme">
-                    <input className="resume3img after-delete" type="file" accept="image/*" onChange={chagephoto}/>
-                        <p class="r3-am">About Me</p>
-                        <p class="r3-des-about-me">
-                            Lorem ipsum dolor sit amet,
-                            consectetur adipiscing elit.
-                            Vestibulum sit amet quam
-                            rhoncus, egestas dui eget,
-                            malesuada justo. Ut aliquam
-                            augue
-                        </p>
-                    </div>
-                    <div class="r3-contact">
-                        <p>+123-456-7890</p>
-                        <p>hello@gmail.com</p>
-                        <p>123 Anywhere St., Any City</p>
-                    </div>
-                    <div class="r3-language">
-                        <div class="r3-box">
-                            <p>LANGUAGE</p>
-                        </div>
-                        <ul>
-                            <li>English</li>
-                            <li>Germany(basic)</li>
-                            <li>Spain (basic)</li>
-                        </ul>
-                    </div>
-                    <div class="r3-EXPERTISE">
-                        <div class="r3-box">
-                            <p>EXPERTISE</p>
-                        </div>
-                        <ul>
-                            <li>Management Skills
-                            </li>
-                            <li>Digital Marketing</li>
-                            <li>Negotiation</li>
-                            <li>Critical Thinking</li>
-                            <li>Leadership</li>
-                        </ul>
-                    </div>
-                    {list2.map(Addlist2)}
-                    <button onMouseOver={showForm3} className="after-delete button" onMouseOut={showForm22} style={ {cursor:"pointer"}}> <span>Add Section</span> </button>
-                <form  onMouseOver={showForm3} onMouseOut={showForm22} className="r3-form section-form" action="" style={showform2?{visibility:"visible"}:{visibility:"hidden"}}>
-                    <input name="heading2" onChange={addSecton2} type="text" value={set2.heading} placeholder="Add Heading" autocomplete="off"/>
-                    <br />
-                    <input name="boldHeading2" onChange={addSecton2} type="text" value={set2.boldHeading} placeholder="Add Bold Sub Heading" autocomplete="off"/>
-                    <br />
-                    <input name="lightHeading2" onChange={addSecton2} type="text" value={set2.lightHeading} placeholder="Add Light Sub Heading" autocomplete="off"/>
-                    <br />
-                    <textarea  onChange={addSecton2} name="paragraph2" id="" cols="30" value={set2.paragraph} rows="10" placeholder="Add Paragraph" autocomplete="off"></textarea>
-                    <br />
-                    <button className="add"  style={{cursor:"pointer"}} onClick={AddSection2}> <span>Add</span> </button>
-                </form>
+                </div>
             </div>
-            <div class="r3-right">
-                <div class="r3-EXPERIENCE">
-                    <div class="r3-box">
-                        <p>EXPERIENCE</p>
+            <div className="three-lower">
+                <div className="three-left">
+                    <div className="three-about-me">
+                        <h1
+                        onBlur={(event)=>{
+                            handleAboutMe({
+                                name:event.target.innerText,
+                                info:""
+                        })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}>{resume.about_me.name}</h1>
+                        <p
+                        onBlur={(event)=>{
+                            handleAboutMe({
+                                name:"",
+                                info:event.target.innerText
+                        })
+                    }}
+                    suppressContentEditableWarning={true}
+                    contentEditable={edit}>{resume.about_me.info}</p>
                     </div>
-                    <p class="r3-dark">Studio Showde</p>
-                    <p class="r3-dark">Canberra - Australia</p>
-                    <p class="r3-dark">2020 - 2022</p>
-                    <p class="r3-info-below-dark">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Vestibulum sit amet quam rhoncus, egestas dui eget,
-                        malesuada justo. Ut aliquam augue.</p>
-                    <div>
-                        <p class="r3-dark">Elsetown Cor.</p>
-                    <p class="r3-dark">Kota Baru - Singapore
-                    </p>
-                    <p class="r3-dark">2016 - 2020
-                    </p>
-                    <p class="r3-info-below-dark">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Vestibulum sit amet quam rhoncus, egestas dui eget,
-                        malesuada justo. Ut aliquam augue.</p>
+                    <div className="three-contact">
+                        {resume.contact.map((data,i)=>{
+                            return <p><a 
+                                onBlur={(event)=>{
+                                    handleContact({
+                                        name:event.target.innerText,
+                                        link:"",
+                                        index:i
+                                })
+                            }}
+                            suppressContentEditableWarning={true}
+                            contentEditable={edit}href={data.link}>{data.name}</a></p>
+                        })}
+                        
                     </div>
-                    <div>
-                        <p class="r3-dark">Studio Showde</p>
-                    <p class="r3-dark">sydney - Australia
-                    </p>
-                    <p class="r3-dark">2010 - 2015
-                    </p>
-                    <p class="r3-info-below-dark">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Vestibulum sit amet quam rhoncus, egestas dui eget,
-                        malesuada justo. Ut aliquam augue.</p>
+                    <div className="three-language">
+                        <h1 
+                        onBlur={(event)=>{
+                            handleList({
+                                data:event.target.innerText,
+                                index1:3,
+                                index2:0
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}className="blue">{resume.language[0]}</h1>
+                        <ul>
+                        {resume.language.map((data,index)=>{
+                            return index!=0?<li
+                            onBlur={(event)=>{
+                                handleList({
+                                    data:event.target.innerText,
+                                    index1:3,
+                                    index2:index
+                                })
+                            }}
+                            suppressContentEditableWarning={true}
+                            contentEditable={edit}>{data}</li>:null;
+                        })}
+                        </ul>
+                        <Form language={true} skills={false} expertise={false}></Form>
+                    </div>
+                    <div className="three-expertise">
+                        <h1 
+                        onBlur={(event)=>{
+                            handleList({
+                                data:event.target.innerText,
+                                index1:4,
+                                index2:0
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}className="blue">{resume.expertise[0]}</h1>
+
+                        <ul>
+                            {resume.expertise.map((data,index)=>{
+                                return index!=0?<li
+                                onBlur={(event)=>{
+                                    handleList({
+                                        data:event.target.innerText,
+                                        index1:4,
+                                        index2:index
+                                    })
+                                }}
+                                suppressContentEditableWarning={true}
+                                contentEditable={edit}>{data}</li>:null;
+                            })}
+                        </ul>
+                        <Form language={false} skills={false} expertise={true}></Form>
+                    </div>
+                    <div className="three-skills">
+                        <h1 
+                        onBlur={(event)=>{
+                            handleList({
+                                data:event.target.innerText,
+                                index1:5,
+                                index2:0
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}className="blue">{resume.skills[0]}</h1>
+                        <ul>
+                        {resume.skills.map((data,index)=>{
+                                return index!=0?<li 
+                                onBlur={(event)=>{
+                                    handleList({
+                                        data:event.target.innerText,
+                                        index1:5,
+                                        index2:index
+                                    })
+                                }}
+                                suppressContentEditableWarning={true}
+                                contentEditable={edit}>{data}</li>:null;
+                            })}
+                        </ul>
+                        <Form language={false} skills={true} expertise={false}></Form>
                     </div>
                 </div>
-                <div class="r3-EDUCATION">
-                    <div class="r3-box">
-                        <p>EDUCATION</p>
-                    </div>
-                    <p class="r3-dark">Borcelle University</p>                   
-                     <p class="r3-info-below-dark">Bachelor of Business Management</p>
-                     <p class="r3-info-below-dark">2014-2023</p>
+                <div className="three-right">
+                <div className="three-experience"> 
+                    <h1 
+                    onBlur={(event)=>{
+                        handleInfo({
+                            name:event.target.innerText,
+                            year:"",
+                            info:"",
+                            index1:6,
+                            index2:0
+                       })
+                    }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}
+                        className="blue-extended">{resume.experience[0].name}</h1>
+                    {resume.experience.map((data,index)=>{
+                        if(index!=0){
+                            return(
+                            <div className="actual-experience">
+                                <h1
+                                onBlur={(event)=>{
+                                    handleInfo({
+                                        name:event.target.innerText,
+                                        year:"",
+                                        info:"",
+                                        index1:6,
+                                        index2:index
+                                    })
+                                }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}>{data.name}</h1>
+                                <h5
+                                onBlur={(event)=>{
+                                    handleInfo({
+                                        name:"",
+                                        year:event.target.innerText,
+                                        info:"",
+                                        index1:6,
+                                        index2:index
+                                    })
+                                }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}><i>{data.year}</i></h5>
+                                <p
+                                onBlur={(event)=>{
+                                    handleInfo({
+                                        name:"",
+                                        year:"",
+                                        info:event.target.innerText,
+                                        index1:6,
+                                        index2:index
+                                    })
+                                }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}>{data.info}</p>
+                                <button onClick={()=>{
+                                    handleExperienceDelete(index);
+                                }}>Delete</button>
+                            </div>
+                            );
+                        }
+                    })}
+
+                </div>
                     <div>
-                        <p class="r3-dark">Borcelle University</p>
-                    <p class="r3-info-below-dark">Master of Business Management</p>
-                    <p class="r3-info-below-dark">2014-2018</p>
+                        <h1 
+                        onBlur={(event)=>{
+                            handleInfo({
+                                name:event.target.innerText,
+                                year:"",
+                                info:"",
+                                index1:7,
+                                index2:0
+                            })
+                        }}
+                        suppressContentEditableWarning={true}
+                        contentEditable={edit}
+                        className="blue-extended">{resume.projects[0].name}</h1>
+
+                        {resume.projects.map((data,index)=>{
+                            if(index!=0){
+                                return (
+                                <div className="actual-experience">
+                                    <h1
+                                    onBlur={(event)=>{
+                                        handleInfo({
+                                            name:event.target.innerText,
+                                            year:"",
+                                            info:"",
+                                            index1:7,
+                                            index2:index
+                                        })
+                                    }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}>{data.name}</h1>
+                                    <h5
+                                    onBlur={(event)=>{
+                                        handleInfo({
+                                            name:"",
+                                            year:event.target.innerText,
+                                            info:"",
+                                            index1:7,
+                                            index2:index
+                                        })
+                                    }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}><i>{data.year}</i></h5>
+                                    <p
+                                    onBlur={(event)=>{
+                                        handleInfo({
+                                            name:"",
+                                            year:"",
+                                            info:event.target.innerText,
+                                            index1:7,
+                                            index2:index
+                                        })
+                                    }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}>{data.info}</p>
+                                    <button onClick={()=>{
+                                    handleProjectsDelete(index);
+                                }}>Delete</button>
+                                </div>
+                                );
+                            }
+                        })}
+                        
+                    </div>
+                    <div>
+                        <h1 
+                        onBlur={(event)=>{
+                            handleEducation({
+                                name:event.target.innerText,
+                                year:"",
+                                info:"",
+                                index1:0,
+
+                            })
+                        }}
+                        className="blue-extended">{resume.education[0]}</h1>
+                        {resume.education.map((data,index)=>{
+                            if(index!=0){
+                                return (
+                                <div className="actual-education">
+                                    <p 
+                                onBlur={(event)=>{
+                                    handleEducation({
+                                        name:event.target.innerText,
+                                        year:"",
+                                        info:"",
+                                        index1:index,
+
+                                    })
+                                }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}
+                                    >{data.name}</p>
+                                    <p
+                                    onBlur={(event)=>{
+                                        handleEducation({
+                                            name:"",
+                                            year:"",
+                                            info:event.target.innerText,
+                                            index1:index,
+
+                                        })
+                                    }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}>{data.info}</p>
+                                    <p
+                                    onBlur={(event)=>{
+                                        handleEducation({
+                                            name:"",
+                                            year:event.target.innerText,
+                                            info:"",
+                                            index1:index,
+
+                                        })
+                                    }}
+                                    suppressContentEditableWarning={true}
+                                    contentEditable={edit}><i>{data.year}</i></p>
+                                    <button onClick={()=>{handleEducationDelete(index)}}>Delete Education</button>
+                                </div>
+                                );
+                            }
+                        })}
+                       
+
                     </div>
 
                 </div>
-                <div class="r3-SKILLS-SUMMARY">
-                    <div class="r3-box box2">
-                        <p>SKILLS SUMMARY</p>
-                    </div>
-                    <div class="r3-persent">
-                        <table>
-                            
-
-                            <tr>
-                              <td><span>Centro comercial</span></td>
-                              <td><span>Centro comercial</span></td>
-                              
-                            </tr>
-                          </table>
-                    </div>
-                    
-
-                </div>
-                {list.map(Addlist)}
-                <button className="after-delete button" onMouseOver={showForm} onMouseOut={showForm2} style={ {cursor:"pointer"}}> <span>ADD Section</span> </button>
-                <form  onMouseOver={showForm} onMouseOut={showForm2} className="r3-form section-form" action="" style={showform?{visibility:"visible"}:{visibility:"hidden"}}>
-                    <input name="heading" onChange={addSecton} type="text" value={set.heading} placeholder="Add Heading" autocomplete="off"/>
-                    <br />
-                    <input name="boldHeading" onChange={addSecton} type="text" value={set.boldHeading} placeholder="Add Bold Sub Heading" autocomplete="off"/>
-                    <br />
-                    <input name="lightHeading" onChange={addSecton} type="text" value={set.lightHeading} placeholder="Add Light Sub Heading" autocomplete="off"/>
-                    <br />
-                    <textarea  onChange={addSecton} name="paragraph" id="" cols="30" value={set.paragraph} rows="10" placeholder="Add Paragraph"></textarea>
-                    <br />
-                    <button className="add"  style={{cursor:"pointer"}} onClick={AddSection}> <span>Add</span> </button>
-                </form>
             </div>
+
+
         </div>
-    </div>
-            <button className="button download after-delete" style={showform?{"opacity":0}:{"opacity":1}} onClick={save}> <span>Save</span></button>
-             <button className="download button after-delete" style={showform?{visibility:"hidden"}:{visibility:"visible"}} onClick={download}><span>download</span></button>
+        <div className="lower-sec">
+        <ProjectExperi project={true} experience={false}></ProjectExperi>
+        <ProjectExperi project={false} experience={true}></ProjectExperi>
+        <EducationForm></EducationForm>
+        <ContactForm></ContactForm>
+        <Download current={ref}></Download>
         </div>
-    )
+        </>
+    );
 }
 export default ResumeThree;

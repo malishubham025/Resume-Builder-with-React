@@ -709,7 +709,7 @@ function FirstResume(){
         {/* <AboutMe AboutMe={true}></AboutMe> */}
         <AboutMe AboutMe={false}></AboutMe>
         <HandleContact></HandleContact>
-        <Download name="resume_pdf" current={pdfRef.current}></Download>
+        <Download  current={pdfRef}></Download>
         </div>
         </>
     )

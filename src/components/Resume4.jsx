@@ -358,7 +358,8 @@ function ResumeFinal() {
           );
         })}
       </div>
-      <Download name="shubham" current={pdfRef.current}></Download>
+
+      <Download name="shubham" current={pdfRef} ></Download>
 
       <button onClick={onSave}>Save</button>
     </div>
