@@ -1,32 +1,149 @@
-.login-div{
-    padding: 30px;
-    width: 50%;
+.login-div {
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    margin: 100px auto 0 auto;
-    background-color: rgba(97, 255, 239, 0.277);
-}
-.login-form{
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-}
-.login-form input{
-    border-radius: 10px;
-    background-color: none;
-    padding: 5px;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .login-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .login-form h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .login-form input[type="text"],
+  .login-form input[type="email"],
+  .login-form input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .login-form input[type="text"]:focus,
+  .login-form input[type="email"]:focus,
+  .login-form input[type="password"]:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4a90e2;
+    color: white;
     border: none;
-
-}
-.login-form button{
-    border-radius: 10px;
-    background-color: none;
-    padding: 6px;
-    border: solid black 1px;
-    width: 70%;
-
-}
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-button:hover {
+    background-color: #357abd;
+  }
+  
+  .login-form a {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #4a90e2;
+    text-decoration: none;
+  }
+  
+  .login-form a:hover {
+    text-decoration: underline;
+  }
+  
+  /* OTP Container Styles */
+  .otp-container {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .otp-container.not-visible {
+    display: none;
+  }
+  
+  .inputs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-direction: row;
+  }
+  
+  .input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin: 0 4px;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .otp-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .otp-container button:hover {
+    background-color: #357abd;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .login-form {
+      padding: 1.5rem;
+      margin: 1rem;
+    }
+  
+    .input {
+      width: 35px;
+      height: 35px;
+    }
+  }
+  .inputs {
+    display: flex; /* Align inputs in a single row */
+    justify-content: center; /* Center them horizontally */
+    gap: 0.5rem; /* Add space between the inputs */
+  }
+  
+  .input {
+    width: 40px;
+    height: 40px;
+    text-align: center; /* Ensure the text inside the input is centered */
+    font-size: 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  

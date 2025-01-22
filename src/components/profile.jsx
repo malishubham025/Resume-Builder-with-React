@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import ResumeFinal from "./Resume4";
 
 // import { Navigate } from "react-router-dom";
@@ -32,6 +32,33 @@ useEffect(()=>{
         }
     })
 },[])
+function GetImage(props){
+    let id=props.tempid;
+    if(id==='1'){
+        return (
+
+                <img className="resumeimg" src="./images/tem1.png" alt="" /> 
+                
+        );
+    }
+    else if(id==='3'){
+        return (
+           
+            
+            <img className="resumeimg" src="./images/tem3.png" alt="" /> 
+        //    </div>
+           
+        );     
+    }
+    else{
+        return (
+            <div>
+                four
+            </div>
+        );
+    }
+
+}
 function handleEdit(index,resumeData){
     // console.log(index,data);
    
@@ -48,9 +75,15 @@ function handleEdit(index,resumeData){
         <div className="userresumes">
             {resume.length > 0 ? (
                 resume.map((data, index) => (
-                    <div>
-                    <div key={index} dangerouslySetInnerHTML={{ __html: data.data }} />
-                    <button onClick={()=>{handleEdit(index,data)}}>Edit this </button>
+                    <div className="profile-cards">
+                        <div className="card-p">
+                            <div key={index} className="pc">
+                                
+                                <GetImage tempid={data._id.substring(data.username.length)} />
+                                
+                            </div>
+                            <button onClick={()=>{handleEdit(index,data)}}>Edit this </button>
+                        </div>
                     </div>
                 ))
             ) : (

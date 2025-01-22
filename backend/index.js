@@ -11,8 +11,12 @@ const cookieParser = require('cookie-parser');
 const { stringify } = require("querystring");
 const fs=require("fs");
 const multer = require("multer");
+const Redis=require("ioredis");
+const nodemailer = require("nodemailer");
+const {Queue,Worker}=require("bullmq"); 
 require('dotenv').config();
-
+const redis=new Redis();
+const axios=require("axios");
 app.use(cookieParser());
 let str=`mongodb+srv://${process.env.mongouser}:${process.env.mongopassword}@cluster0.cozcz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 mongoose.connect("mongodb://127.0.0.1:27017/resumeBuilder").then(()=>{
@@ -230,49 +234,54 @@ app.post("/login",(req,res)=>{
     });
     
 })
-app.post("/signup", (req, res) => {
-    const { username, password, email } = req.body;
+app.post("/signup", async (req, res) => {
+    try {
+        const { username, password, email } = req.body.user;
+        const userotp = req.body.userotp;
 
-    // Check if username or email already exists in the database
-    model.findOne({ $or: [{ username: username }, { email: email }] })
-        .then(existingUser => {
-            if (existingUser) {
-                // Username or email already exists, return a conflict error
-                return res.status(409).send({
-                    message: "Username or email already exists"
-                });
-            }
+        // Check if username or email already exists
+        const existingUser = await model.findOne({ $or: [{ username }, { email }] });
+        if (existingUser) {
+            return res.status(409).send({ message: "Username or email already exists" });
+        }
 
-            // If no duplicate is found, proceed with creating the new user
-            const newUser = new model({
-                _id: new Date().getTime(), // Use a timestamp as an example unique ID
-                username: username,
-                password: password, // You should hash this password before saving
-                email: email
+        // Verify OTP with Redis
+        const storedOtp = await new Promise((resolve, reject) => {
+            redis.get(username, (err, value) => {
+                if (err) return reject(err);
+                resolve(value);
             });
-
-            // Save the new user
-            newUser.save()
-                .then(() => {
-                    console.log("Signup successful");
-
-                    // Sign the JWT token with the user info (excluding password for security)
-                    const id = jwt.sign({ username: newUser.username }, secret);
-
-                    // Set the JWT token as a cookie
-                    res.cookie("userid", id, { httpOnly: true, secure: true });
-
-                    res.status(200).send({ message: "Signup successful" });
-                })
-                .catch((err) => {
-                    console.error(err);
-                    res.status(500).send({ message: "Internal server error" });
-                });
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).send({ message: "Internal server error" });
         });
+
+        if (!storedOtp || storedOtp !== userotp) {
+            return res.status(409).send({ message: "Invalid OTP" });
+        }
+
+        // Hash the password (use bcrypt or similar library)
+        const hashedPassword = password; // Replace with bcrypt.hash(password, saltRounds) in real-world applications
+
+        // Create a new user instance
+        const newUser = new model({
+            _id: new Date().getTime(), // Example unique ID (use UUID in production)
+            username,
+            password: hashedPassword,
+            email
+        });
+
+        // Save the new user to the database
+        await newUser.save();
+
+        // Generate JWT token
+        const token = jwt.sign({ username: newUser.username }, secret);
+
+        // Set the token as a cookie
+        res.cookie("userid", token, { httpOnly: true, secure: true });
+
+        res.status(200).send({ message: "Signup successful" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({ message: "Internal server error" });
+    }
 });
 
 
@@ -288,7 +297,55 @@ app.get("/",(req,res)=>{
 // >>>>>>> parent of 525d1bf (Delete backend directory)
     res.hi="hello";
     res.send("hello");
-})
+});
+function generateOTP() { 
+  
+    // Declare a digits variable 
+    // which stores all digits  
+    let digits = '0123456789'; 
+    let OTP = ''; 
+    let len = digits.length 
+    for (let i = 0; i < 4; i++) { 
+        OTP += digits[Math.floor(Math.random() * len)]; 
+    } 
+     
+    return OTP; 
+} 
+
+const q=new Queue("email-queue");
+
+app.post("/send-otp", (req, res) => {
+    const { username, password, email } = req.body;
+
+    if (!username || !email) {
+        return res.status(400).send({ message: "Username and email are required" });
+    }
+
+    model.findOne({ $or: [{ username }, { email }] })
+        .then(existingUser => {
+            if (existingUser) {
+                return res.status(409).send({ message: "Username or email already exists" });
+            } else {
+                let otp = generateOTP();
+                console.log("Generated OTP:", otp);
+
+                redis.set(username, otp, "EX", 60 * 5, (err) => {
+                    if (err) {
+                        console.error("Redis set error:", err);
+                        return res.status(500).send({ message: "Failed to save OTP" });
+                    }
+                    else{
+                        q.add("email",{otp,email});
+                        res.status(200).send({ message: "OTP sent successfully" });
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Database query error:", err);
+            res.status(500).send({ message: "Internal server error" });
+        });
+});
 
 app.listen("5000",function(){
     console.log("running ...");

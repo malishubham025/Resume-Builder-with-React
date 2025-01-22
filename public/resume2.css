@@ -7,17 +7,7 @@
     /* height: 100px; */
     margin-bottom: 20px;
 }
-.profile{
-   position: absolute;
-   z-index: 2;
-   left: 20px;
-   width: 35%;
-   /* padding-top: 50px; */
-   background-color:#b39d9e;
-   height: 100%;
-   
-   top: 0;
-}
+
 .photo{
     /* height: 230px; */
     width: 100%;

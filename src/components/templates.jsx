@@ -19,10 +19,10 @@ function Template(prompts){
             <img name="i1" src="./images/tem1.png" alt="" /> 
            </div>
            </Link>
-           <Link to="/template2">
+           <Link to="/template4">
            <div name="c2" onClick={Click} className="card2">
-           <h1> <span>Pink</span>  and Brown</h1>
-           <img name="i2" src="./images/tem2.png" alt="" />
+           <h1> <span>White</span>  and Black</h1>
+           <img name="i2" src="./images/image.png" alt="" />
            </div>
            </Link>
            <Link to="/template3"><div name="c3" onClick={Click} className="card3">
@@ -31,7 +31,7 @@ function Template(prompts){
            </div>
            </Link>
 
-           <Link to="/template4"><h1>Temp4</h1></Link>
+           {/* <Link to="/template4"><h1>Temp4</h1></Link> */}
         </div>
     )
 }
